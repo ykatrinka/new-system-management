@@ -1,0 +1,1 @@
+# Система управления новостями - News Management System
