@@ -1,0 +1,77 @@
+package ru.clevertec.newsservice.mapper;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
+import ru.clevertec.newsservice.dto.request.NewsRequest;
+import ru.clevertec.newsservice.dto.response.NewsResponse;
+import ru.clevertec.newsservice.entity.News;
+import ru.clevertec.newsservice.util.NewsTestData;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+@ExtendWith(MockitoExtension.class)
+class NewsMapperTest {
+
+    @InjectMocks
+    private NewsMapper newsMapper = new NewsMapperImpl();
+
+    @Test
+    void shouldConvertNewsRequestToNews() {
+        //given
+        NewsRequest newsRequest = NewsTestData.getFillNewsRequest();
+
+        //when
+        News actualNews = newsMapper.requestToNews(newsRequest);
+
+        //then
+        assertAll(
+                () -> assertNull(actualNews.getId()),
+                () -> assertEquals(newsRequest.time(), actualNews.getTime()),
+                () -> assertEquals(newsRequest.title(), actualNews.getTitle()),
+                () -> assertEquals(newsRequest.text(), actualNews.getText())
+        );
+    }
+
+    @Test
+    void shouldConvertNewsToNewsResponse() {
+        //given
+        News news = NewsTestData.getFillNewsWithId();
+
+        //when
+        NewsResponse actualNewsResponse = newsMapper.newsToResponse(news);
+
+        //then
+        assertAll(
+                () -> assertNotNull(actualNewsResponse),
+                () -> assertEquals(news.getId(), actualNewsResponse.id()),
+                () -> assertEquals(news.getTime(), actualNewsResponse.time()),
+                () -> assertEquals(news.getTitle(), actualNewsResponse.title()),
+                () -> assertEquals(news.getText(), actualNewsResponse.text())
+        );
+    }
+
+    @Test
+    void shouldUpdateNewsFromNewsRequest() {
+        //given
+        NewsRequest newsRequest = NewsTestData.getFillNewsRequest();
+        long newsId = NewsTestData.NEWS_ID_FOR_GET;
+
+        //when
+        News actualNews = newsMapper.updateFromRequest(newsId, newsRequest);
+
+        //then
+        assertAll(
+                () -> assertNotNull(actualNews),
+                () -> assertEquals(newsId, actualNews.getId()),
+                () -> assertEquals(newsRequest.time(), actualNews.getTime()),
+                () -> assertEquals(newsRequest.title(), actualNews.getTitle()),
+                () -> assertEquals(newsRequest.text(), actualNews.getText())
+        );
+    }
+
+}
