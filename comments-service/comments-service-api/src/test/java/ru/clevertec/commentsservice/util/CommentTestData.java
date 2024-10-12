@@ -15,13 +15,21 @@ public class CommentTestData {
             .of(2024, 9, 3, 0, 0);
     public static final long COMMENT_ID = 1L;
 
-    //integration
+
     public static final long COMMENT_ID_NEW = 5L;
     public static final long COMMENT_NEWS_ID = 1L;
     public static final String COMMENT_TEXT = "Comment 1";
     public static final long COMMENT_ID_NOT_FOUND = 7L;
     public static final long COMMENT_ID_UPD = 2L;
 
+    //integration
+    //search
+    public static final int SEARCH_LIMIT = 15;
+    public static final String SEARCH_VALUE = "Sarah";
+    public static final List<String> SEARCH_FIELDS = List.of("username", "text");
+    public static final List<String> SEARCH_NOT_VALID_FIELDS = List.of("title", "text");
+    public static final String[] SEARCH_FIELDS_ARRAY = {"username", "text"};
+    public static final String[] SEARCH_NOT_VALID_FIELDS_ARRAY = {"title", "text"};
 
     public static CommentRequest getCommentRequest() {
         return CommentRequest.builder()

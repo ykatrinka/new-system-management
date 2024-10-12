@@ -1,6 +1,5 @@
 package ru.clevertec.newsservice.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.clevertec.newsservice.entity.News;
 
@@ -10,5 +9,5 @@ import ru.clevertec.newsservice.entity.News;
  * Репозиторий для работы с таблицей news базы данных.
  */
 @Repository
-public interface NewsRepository extends JpaRepository<News, Long> {
+public interface NewsRepository extends SearchRepository<News, Long> {
 }

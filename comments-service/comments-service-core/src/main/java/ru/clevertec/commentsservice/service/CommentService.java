@@ -54,4 +54,14 @@ public interface CommentService {
      */
     void deleteComment(Long commentId);
 
+    /**
+     * Метод для полнотекстового поиска
+     * по выбранным полям.
+     *
+     * @param text   Текст для поиска.
+     * @param limit  Количество элементов.
+     * @param fields Перечень полей для поиска.
+     */
+    List<CommentResponse> searchComments(String text, List<String> fields, int limit);
+
 }

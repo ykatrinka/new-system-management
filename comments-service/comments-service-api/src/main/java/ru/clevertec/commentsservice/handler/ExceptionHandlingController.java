@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.clevertec.commentsservice.exception.CommentNotFoundException;
+import ru.clevertec.commentsservice.exception.NoSuchSearchFieldException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -39,6 +40,24 @@ public class ExceptionHandlingController {
                 .build();
 
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Исключение, когда поле для полнотекстового поиска не найдено.
+     *
+     * @param e Тип выброшенного исключения
+     * @return ErrorMessage
+     * Данные со статусом и описанием ошибки.
+     */
+    @ExceptionHandler(value = {NoSuchSearchFieldException.class})
+    public ResponseEntity<ErrorMessage> handleNoSuchSearchFieldExceptions(NoSuchSearchFieldException e) {
+        ErrorMessage errorMessage = ErrorMessage.builder()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .timeStamp(LocalDateTime.now())
+                .message(e.getMessage())
+                .build();
+
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
     /**

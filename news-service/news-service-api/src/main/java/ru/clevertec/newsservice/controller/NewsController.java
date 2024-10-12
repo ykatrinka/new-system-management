@@ -105,4 +105,24 @@ public class NewsController {
         newsService.deleteNews(newsId);
     }
 
+    /**
+     * Endpoint для полнотекстового поиска новостей.
+     * Возвращает список новостей, соответствующих параметрам поиска.
+     *
+     * @param text   Текст для поиска.
+     * @param limit  Необязательный параметр.
+     *               Количество записей (по умолчанию 15).
+     * @param fields Перечень полей для поиска.
+     */
+    @GetMapping("/search")
+    public ResponseEntity<List<NewsResponse>> searchNews(
+            @RequestParam(name = "text") String text,
+            @RequestParam(
+                    name = "limit",
+                    defaultValue = "15",
+                    required = false) int limit,
+            @RequestParam(name = "fields") List<String> fields
+    ) {
+        return new ResponseEntity<>(newsService.searchNews(text, fields, limit), HttpStatus.OK);
+    }
 }

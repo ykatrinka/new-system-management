@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.clevertec.newsservice.dto.request.NewsRequest;
 import ru.clevertec.newsservice.dto.response.NewsResponse;
 import ru.clevertec.newsservice.exception.NewsNotFoundException;
+import ru.clevertec.newsservice.exception.NoSuchSearchFieldException;
 import ru.clevertec.newsservice.service.NewsService;
 import ru.clevertec.newsservice.util.NewsTestData;
 
@@ -154,4 +155,56 @@ class NewsControllerTest {
 
     }
 
+    @Nested
+    class Search {
+
+        @Test
+        void shouldGetNewsWithFullTextSearch() throws Exception {
+            //given
+            String searchValue = NewsTestData.SEARCH_VALUE;
+            List<String> searchFields = NewsTestData.SEARCH_FIELDS;
+            int searchLimit = NewsTestData.SEARCH_LIMIT;
+            List<NewsResponse> newsResponses = NewsTestData.getListNewsResponse();
+
+            when(newsService.searchNews(searchValue, searchFields, searchLimit))
+                    .thenReturn(newsResponses);
+
+            //when
+            mockMvc.perform(get("/news/search")
+                            .param("text", searchValue)
+                            .param("fields", NewsTestData.SEARCH_FIELDS_ARRAY)
+                            .param("limit", String.valueOf(searchLimit)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(2));
+
+            //then
+            verify(newsService, times(1))
+                    .searchNews(searchValue, searchFields, searchLimit);
+
+        }
+
+        @Test
+        void shouldNotGetNewsWithFullTextSearch_whenSearchFieldsIsNotValid() throws Exception {
+            //given
+            String searchValue = NewsTestData.SEARCH_VALUE;
+            List<String> searchFields = NewsTestData.SEARCH_NOT_VALID_FIELDS;
+            int searchLimit = NewsTestData.SEARCH_LIMIT;
+
+            when(newsService.searchNews(searchValue, searchFields, searchLimit))
+                    .thenThrow(NoSuchSearchFieldException.class);
+
+            //when
+            mockMvc.perform(get("/news/search")
+                            .param("text", searchValue)
+                            .param("fields", NewsTestData.SEARCH_NOT_VALID_FIELDS_ARRAY)
+                            .param("limit", String.valueOf(searchLimit))
+                    )
+                    .andExpect(status().isBadRequest());
+
+            //then
+            verify(newsService, times(1))
+                    .searchNews(searchValue, searchFields, searchLimit);
+
+        }
+    }
 }

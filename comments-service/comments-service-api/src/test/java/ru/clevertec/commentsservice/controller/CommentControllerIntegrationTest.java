@@ -235,4 +235,65 @@ class CommentControllerIntegrationTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
+    @Test
+    void shouldGetCommentsWithFullTextSearch() {
+        //given
+        String searchValue = CommentTestData.SEARCH_VALUE;
+        List<String> searchFields = CommentTestData.SEARCH_FIELDS;
+        int searchLimit = CommentTestData.SEARCH_LIMIT;
+
+        //when
+        URI uri = UriComponentsBuilder.fromHttpUrl(restTemplate.getRootUri())
+                .path("/comments/search")
+                .queryParam("text", searchValue)
+                .queryParam("fields", searchFields)
+                .queryParam("limit", String.valueOf(searchLimit))
+                .build().toUri();
+
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                uri,
+                HttpMethod.GET,
+                null,
+                String.class);
+
+        //then
+        assertAll(
+                () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
+                () -> assertEquals(MediaType.APPLICATION_JSON, responseEntity.getHeaders().getContentType())
+        );
+
+    }
+
+    @Test
+    void shouldNotGetCommentsWithFullTextSearch_whenSearchFieldsIsNotValid() {
+
+        //given
+        String searchValue = CommentTestData.SEARCH_VALUE;
+        List<String> searchFields = CommentTestData.SEARCH_NOT_VALID_FIELDS;
+        int searchLimit = CommentTestData.SEARCH_LIMIT;
+
+        //when
+        URI uri = UriComponentsBuilder.fromHttpUrl(restTemplate.getRootUri())
+                .path("/comments/search")
+                .queryParam("text", searchValue)
+                .queryParam("fields", searchFields)
+                .queryParam("limit", String.valueOf(searchLimit))
+                .build().toUri();
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                uri,
+                HttpMethod.GET,
+                null,
+                String.class);
+
+        //then
+        assertAll(
+                () -> assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode()),
+                () -> assertEquals(MediaType.APPLICATION_JSON, responseEntity.getHeaders().getContentType())
+        );
+
+    }
+
+
 }

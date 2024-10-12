@@ -5,6 +5,8 @@ import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -12,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.clevertec.commentsservice.dto.request.CommentRequest;
 import ru.clevertec.commentsservice.dto.response.CommentResponse;
 import ru.clevertec.commentsservice.exception.CommentNotFoundException;
+import ru.clevertec.commentsservice.exception.NoSuchSearchFieldException;
 import ru.clevertec.commentsservice.service.CommentService;
 import ru.clevertec.commentsservice.util.CommentTestData;
 
@@ -26,7 +29,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@AutoConfigureDataJpa
 @WebMvcTest(CommentController.class)
+@AutoConfigureMockMvc
 class CommentControllerTest {
 
     @MockBean
@@ -177,5 +182,57 @@ class CommentControllerTest {
                 .updateComment(commentId, commentRequest);
     }
 
+    @Nested
+    class Search {
+
+        @Test
+        void shouldGetCommentsWithFullTextSearch() throws Exception {
+            //given
+            String searchValue = CommentTestData.SEARCH_VALUE;
+            List<String> searchFields = CommentTestData.SEARCH_FIELDS;
+            int searchLimit = CommentTestData.SEARCH_LIMIT;
+            List<CommentResponse> comments = CommentTestData.getListWithTwoCommentResponse();
+
+            when(commentService.searchComments(searchValue, searchFields, searchLimit))
+                    .thenReturn(comments);
+
+            //when
+            mockMvc.perform(get("/comments/search")
+                            .param("text", searchValue)
+                            .param("fields", CommentTestData.SEARCH_FIELDS_ARRAY)
+                            .param("limit", String.valueOf(searchLimit)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(2));
+
+            //then
+            verify(commentService, times(1))
+                    .searchComments(searchValue, searchFields, searchLimit);
+
+        }
+
+        @Test
+        void shouldNotGetCommentsWithFullTextSearch_whenSearchFieldsIsNotValid() throws Exception {
+            //given
+            String searchValue = CommentTestData.SEARCH_VALUE;
+            List<String> searchFields = CommentTestData.SEARCH_NOT_VALID_FIELDS;
+            int searchLimit = CommentTestData.SEARCH_LIMIT;
+
+            when(commentService.searchComments(searchValue, searchFields, searchLimit))
+                    .thenThrow(NoSuchSearchFieldException.class);
+
+            //when
+            mockMvc.perform(get("/comments/search")
+                            .param("text", searchValue)
+                            .param("fields", CommentTestData.SEARCH_NOT_VALID_FIELDS_ARRAY)
+                            .param("limit", String.valueOf(searchLimit))
+                    )
+                    .andExpect(status().isBadRequest());
+
+            //then
+            verify(commentService, times(1))
+                    .searchComments(searchValue, searchFields, searchLimit);
+
+        }
+    }
 
 }

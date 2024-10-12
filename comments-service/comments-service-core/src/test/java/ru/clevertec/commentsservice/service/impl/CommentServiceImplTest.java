@@ -12,6 +12,7 @@ import ru.clevertec.commentsservice.dto.request.CommentRequest;
 import ru.clevertec.commentsservice.dto.response.CommentResponse;
 import ru.clevertec.commentsservice.entity.Comment;
 import ru.clevertec.commentsservice.exception.CommentNotFoundException;
+import ru.clevertec.commentsservice.exception.NoSuchSearchFieldException;
 import ru.clevertec.commentsservice.mapper.CommentMapper;
 import ru.clevertec.commentsservice.repository.CommentRepository;
 import util.CommentTestData;
@@ -76,7 +77,9 @@ class CommentServiceImplTest {
     @Test
     void shouldGetAllComments() {
         //given
-        PageRequest pageable = PageRequest.of(CommentTestData.PAGE_NUMBER, CommentTestData.COMMENTS_PAGE_SIZE);
+        PageRequest pageable = PageRequest.of(
+                CommentTestData.PAGE_NUMBER,
+                CommentTestData.COMMENTS_PAGE_SIZE);
         Page<Comment> pageComments = CommentTestData.getPageableListComments();
         List<CommentResponse> commentResponses = CommentTestData.getListCommentsResponse();
 
@@ -91,7 +94,8 @@ class CommentServiceImplTest {
                 .thenReturn(commentResponses.get(3));
 
         //when
-        List<CommentResponse> actualComments = commentService.getAllComments(CommentTestData.PAGE_NUMBER);
+        List<CommentResponse> actualComments = commentService
+                .getAllComments(CommentTestData.PAGE_NUMBER);
 
         //then
         assertEquals(commentResponses.size(), actualComments.size());
@@ -229,6 +233,80 @@ class CommentServiceImplTest {
             commentService.deleteComment(commentId);
             verify(commentRepository, times(1)).findById(commentId);
             verify(commentRepository, times(1)).delete(comment);
+        }
+
+    }
+
+    @Nested
+    class search {
+
+        @Test
+        void shouldGetCommentsWithFullTextSearch() {
+            //given
+            List<Comment> comments = CommentTestData.getListCommentsSearch();
+            List<CommentResponse> commentResponses = CommentTestData.getListCommentsResponseSearch();
+
+            when(commentRepository.searchBy(CommentTestData.SEARCH_VALUE, 1,
+                    CommentTestData.SEARCH_FIELDS_ARRAY))
+                    .thenReturn(comments);
+            when(commentMapper.commentToResponse(comments.get(0)))
+                    .thenReturn(commentResponses.get(0));
+            when(commentMapper.commentToResponse(comments.get(1)))
+                    .thenReturn(commentResponses.get(1));
+
+            //when
+            List<CommentResponse> actualComments = commentService.searchComments(
+                    CommentTestData.SEARCH_VALUE,
+                    CommentTestData.SEARCH_FIELDS,
+                    1
+            );
+
+            //then
+            assertEquals(commentResponses.size(), actualComments.size());
+            verify(commentRepository, times(1))
+                    .searchBy(CommentTestData.SEARCH_VALUE, 1,
+                            CommentTestData.SEARCH_FIELDS_ARRAY);
+            verify(commentMapper, times(2)).commentToResponse(any());
+        }
+
+
+        @Test
+        void shouldGetCommentsWithFullTextSearch_emptyFields() {
+            //given
+            List<Comment> comments = CommentTestData.getListCommentsSearch();
+            List<CommentResponse> commentResponses = CommentTestData.getListCommentsResponseSearch();
+
+            when(commentRepository.searchBy(CommentTestData.SEARCH_VALUE, 1,
+                    CommentTestData.SEARCH_FIELDS_ARRAY))
+                    .thenReturn(comments);
+            when(commentMapper.commentToResponse(comments.get(0)))
+                    .thenReturn(commentResponses.get(0));
+            when(commentMapper.commentToResponse(comments.get(1)))
+                    .thenReturn(commentResponses.get(1));
+
+            //when
+            List<CommentResponse> actualComments = commentService.searchComments(
+                    CommentTestData.SEARCH_VALUE,
+                    List.of(),
+                    1
+            );
+
+            //then
+            assertEquals(commentResponses.size(), actualComments.size());
+            verify(commentRepository, times(1))
+                    .searchBy(CommentTestData.SEARCH_VALUE, 1,
+                            CommentTestData.SEARCH_FIELDS_ARRAY);
+            verify(commentMapper, times(2)).commentToResponse(any());
+        }
+
+        @Test
+        void shouldNotGetCommentsWithFullTextSearch_whenFieldsIsNotValid() {
+            // given, when, then
+            assertThrows(
+                    NoSuchSearchFieldException.class,
+                    () -> commentService.searchComments(
+                            CommentTestData.SEARCH_VALUE,
+                            CommentTestData.SEARCH_NOT_VALID_FIELDS, 1));
         }
 
     }

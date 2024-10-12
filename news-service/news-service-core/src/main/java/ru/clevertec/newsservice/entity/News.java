@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -24,6 +26,7 @@ import java.time.LocalDateTime;
  * <p>
  * Сущность "Новости".
  */
+@Indexed
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -43,9 +46,11 @@ public class News implements Serializable {
     @CreationTimestamp
     private LocalDateTime time;
 
+    @FullTextField
     @Column
     private String title;
 
+    @FullTextField
     @Column
     private String text;
 }

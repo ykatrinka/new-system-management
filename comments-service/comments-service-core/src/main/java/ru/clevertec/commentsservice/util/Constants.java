@@ -18,4 +18,8 @@ public class Constants {
      * Сообщение об отсутствующем идентификаторе комментария.
      */
     public static final String ERROR_NO_SUCH_COMMENT = "No such Comment with id ";
+    /**
+     * Сообщение о не корректно указанном поле для полнотекстового поиска.
+     */
+    public static final String ERROR_NO_SUCH_FIELD = "No such search field";
 }

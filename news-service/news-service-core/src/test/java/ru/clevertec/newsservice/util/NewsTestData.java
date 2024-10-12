@@ -28,6 +28,13 @@ public class NewsTestData {
             .of(2024, 8, 15, 0, 0, 0);
     public static final String NEWS_CONTENT_UPDATE = "Updated news content for News Title";
 
+    public static final String TITLE_SEARCH = "News Title";
+    public static final String TEXT_SEARCH = "News content for News Title";
+    public static final String SEARCH_VALUE = "News";
+    public static final List<String> SEARCH_FIELDS = List.of("title", "text");
+    public static final List<String> SEARCH_NOT_VALID_FIELDS = List.of("username", "text");
+    public static final String[] SEARCH_FIELDS_ARRAY = {"title", "text"};
+
     //  create
     public static NewsRequest getNewsRequestForCreate() {
         return NewsRequest.builder()
@@ -194,6 +201,41 @@ public class NewsTestData {
                 .title(NEWS_TITLE)
                 .text(NEWS_CONTENT)
                 .build();
+    }
+
+    //  full text search
+    public static List<News> getListNewsSearch() {
+        return List.of(
+                News.builder()
+                        .id(1L)
+                        .time(CREATED_DATE)
+                        .title(NEWS_TITLE)
+                        .text(NEWS_CONTENT)
+                        .build(),
+                News.builder()
+                        .id(2L)
+                        .time(CREATED_DATE)
+                        .title(NEWS_TITLE)
+                        .text(NEWS_CONTENT)
+                        .build()
+        );
+    }
+
+    public static List<NewsResponse> getListNewsResponseSearch() {
+        return List.of(
+                NewsResponse.builder()
+                        .id(1L)
+                        .time(CREATED_DATE)
+                        .title(TITLE_SEARCH)
+                        .text(NEWS_CONTENT)
+                        .build(),
+                NewsResponse.builder()
+                        .id(2L)
+                        .time(CREATED_DATE)
+                        .title(NEWS_TITLE)
+                        .text(TEXT_SEARCH)
+                        .build()
+        );
     }
 
 }

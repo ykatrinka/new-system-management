@@ -14,5 +14,5 @@ TRUNCATE TABLE comment RESTART IDENTITY;
 INSERT INTO comment (time, text, username, news_id)
 VALUES (NOW(), 'Comment 1', 'Patrik', 1),
        (NOW(), 'Comment 2', 'Charly', 1),
-       (NOW(), 'Comment 1 Sarah', 'Polly', 2),
+       (NOW(), 'Comment 1 Sarah back', 'Polly', 2),
        (NOW(), 'Comment 2', 'Sarah', 2);

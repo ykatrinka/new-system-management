@@ -21,7 +21,10 @@
 # Функциональные возможности
 
 Программа реализует API для выполнения CRUD(создание, чтение, изменение, удаление) операций для комментариев.
+
 При получении списка комментариев используется пагинация
+
+Реализован полнотекстовый поиск
 
 # Зависимости
 
@@ -34,6 +37,8 @@
 * Lombok
 * MapStruct
 * Gradle 8.5
+* Hibernate ORM
+* Lucene
 
 При написании интеграционных тестов использовались зависимости Testcontainers
 
@@ -120,6 +125,14 @@ HTTP Method: GET
 Примеры запроса:
 http://localhost:8082/comments
 http://localhost:8082/comments?pageNumber=1
+
+---
+Описание: Этот метод выполняет полнотекстовый поиск.
+Endpoint: /comments/search
+HTTP Method: GET
+
+Примеры запроса:
+http://localhost:8082/comments/search?text=content&fields=username&fields=text&limit=15
 
 
 ### Ответ об ошибке

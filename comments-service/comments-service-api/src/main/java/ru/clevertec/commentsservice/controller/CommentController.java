@@ -106,4 +106,25 @@ public class CommentController {
         commentService.deleteComment(commentId);
     }
 
+    /**
+     * Endpoint для полнотекстового поиска комментариев.
+     * Возвращает список комментариев, соответствующих параметрам поиска.
+     *
+     * @param text   Текст для поиска.
+     * @param limit  Необязательный параметр.
+     *               Количество записей (по умолчанию 15).
+     * @param fields Перечень полей для поиска.
+     */
+    @GetMapping("/search")
+    public ResponseEntity<List<CommentResponse>> searchComments(
+            @RequestParam(name = "text") String text,
+            @RequestParam(
+                    name = "limit",
+                    defaultValue = "15",
+                    required = false) int limit,
+            @RequestParam(name = "fields") List<String> fields
+    ) {
+        return new ResponseEntity<>(commentService.searchComments(text, fields, limit),
+                HttpStatus.OK);
+    }
 }

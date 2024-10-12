@@ -20,7 +20,10 @@
 # Функциональные возможности
 
 Программа реализует API для выполнения CRUD(создание, чтение, изменение, удаление) операций с новостями.
+
 При получении списка новостей используется пагинация
+
+Реализован полнотекстовый поиск
 
 # Зависимости
 
@@ -33,6 +36,9 @@
 * Lombok
 * MapStruct
 * Gradle 8.5
+* Hibernate ORM
+* Lucene
+*
 
 При написании интеграционных тестов использовались зависимости Testcontainers
 
@@ -57,11 +63,10 @@ HTTP Method: POST
 
 Parameters:
 
-| Name   | Type   | Description       |
-|--------|--------|-------------------|
-| title  | String | Заголовок новости |
-| text   | String | Текст новости     |
-
+| Name  | Type   | Description       |
+|-------|--------|-------------------|
+| title | String | Заголовок новости |
+| text  | String | Текст новости     |
 
 Пример запроса:
 http://localhost:8081/news
@@ -86,10 +91,10 @@ HTTP Method: PUT
 
 Parameters:
 
-| Name   | Type   | Description       |
-|--------|--------|-------------------|
-| title  | String | Заголовок новости |
-| text   | String | Текст новости     |
+| Name  | Type   | Description       |
+|-------|--------|-------------------|
+| title | String | Заголовок новости |
+| text  | String | Текст новости     |
 
 Пример запроса:
 http://localhost:8081/news/1
@@ -116,6 +121,13 @@ HTTP Method: GET
 http://localhost:8081/news
 http://localhost:8081/news?pageNumber=1
 
+---
+Описание: Этот метод выполняет полнотекстовый поиск.
+Endpoint: /news/search
+HTTP Method: GET
+
+Примеры запроса:
+http://localhost:8081/news/search?text=content&fields=title&fields=text&limit=15
 
 ### Ответ об ошибке
 

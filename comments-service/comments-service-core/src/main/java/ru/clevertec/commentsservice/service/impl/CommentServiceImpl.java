@@ -1,6 +1,7 @@
 package ru.clevertec.commentsservice.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -9,10 +10,12 @@ import ru.clevertec.commentsservice.dto.request.CommentRequest;
 import ru.clevertec.commentsservice.dto.response.CommentResponse;
 import ru.clevertec.commentsservice.entity.Comment;
 import ru.clevertec.commentsservice.exception.CommentNotFoundException;
+import ru.clevertec.commentsservice.exception.NoSuchSearchFieldException;
 import ru.clevertec.commentsservice.mapper.CommentMapper;
 import ru.clevertec.commentsservice.repository.CommentRepository;
 import ru.clevertec.commentsservice.service.CommentService;
 import ru.clevertec.commentsservice.util.Constants;
+import ru.clevertec.commentsservice.util.ReflectionUtil;
 
 import java.util.List;
 
@@ -112,6 +115,36 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Long commentId) {
         commentRepository.findById(commentId).ifPresent(commentRepository::delete);
+    }
+
+    /**
+     * Метод для полнотекстового поиска
+     * по выбранным полям.
+     *
+     * @param text   Текст для поиска.
+     * @param limit  Количество элементов.
+     * @param fields Перечень полей для поиска.
+     */
+    @Override
+    public List<CommentResponse> searchComments(String text, List<String> fields, int limit) {
+
+        List<String> searchableFields = ReflectionUtil
+                .getFieldsByAnnotation(Comment.class, FullTextField.class);
+        List<String> fieldsToSearchBy = fields.isEmpty() ? searchableFields : fields;
+
+        boolean containsInvalidField = fieldsToSearchBy
+                .stream()
+                .anyMatch(f -> !searchableFields.contains(f));
+
+        if (containsInvalidField) {
+            throw NoSuchSearchFieldException.getInstance();
+        }
+
+        List<Comment> comments = commentRepository.searchBy(
+                text, limit, fieldsToSearchBy.toArray(new String[0]));
+        return comments.stream()
+                .map(commentMapper::commentToResponse)
+                .toList();
     }
 
 }

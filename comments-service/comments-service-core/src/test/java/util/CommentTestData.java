@@ -18,7 +18,7 @@ public class CommentTestData {
 
     public static final LocalDateTime CREATED_DATE = LocalDateTime
             .of(2024, 9, 3, 0, 0, 0);
-    public static final int COMMENTS_PAGE_SIZE = 4;
+    public static final int COMMENTS_PAGE_SIZE = 10;
     public static final int PAGE_NUMBER = 1;
 
     public static final long COMMENT_ID_FOR_GET = 7L;
@@ -38,6 +38,14 @@ public class CommentTestData {
                 .text(TEXT_COMMENT)
                 .build();
     }
+
+    //search
+    public static final String TEXT_SEARCH = "This is a Sarah comment";
+    public static final String USERNAME_SEARCH = "Sarah";
+    public static final String SEARCH_VALUE = "Sarah";
+    public static final List<String> SEARCH_FIELDS = List.of("text", "username");
+    public static final List<String> SEARCH_NOT_VALID_FIELDS = List.of("title", "text");
+    public static final String[] SEARCH_FIELDS_ARRAY = {"text", "username"};
 
     public static Comment getCommentForCreate() {
         return Comment.builder()
@@ -218,4 +226,42 @@ public class CommentTestData {
                 .build();
     }
 
+    //  full text search
+    public static List<Comment> getListCommentsSearch() {
+        return List.of(
+                Comment.builder()
+                        .id(1L)
+                        .username(USERNAME_SEARCH)
+                        .newsId(NEWS_ID)
+                        .text(TEXT_COMMENT)
+                        .time(CREATED_DATE)
+                        .build(),
+                Comment.builder()
+                        .id(2L)
+                        .username(USERNAME)
+                        .newsId(NEWS_ID)
+                        .text(TEXT_SEARCH)
+                        .time(CREATED_DATE)
+                        .build()
+        );
+    }
+
+    public static List<CommentResponse> getListCommentsResponseSearch() {
+        return List.of(
+                CommentResponse.builder()
+                        .id(1L)
+                        .username(USERNAME_SEARCH)
+                        .newsId(NEWS_ID)
+                        .text(TEXT_COMMENT)
+                        .time(CREATED_DATE)
+                        .build(),
+                CommentResponse.builder()
+                        .id(2L)
+                        .username(USERNAME)
+                        .newsId(NEWS_ID)
+                        .text(TEXT_SEARCH)
+                        .time(CREATED_DATE)
+                        .build()
+        );
+    }
 }

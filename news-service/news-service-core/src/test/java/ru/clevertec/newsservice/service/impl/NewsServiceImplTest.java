@@ -12,6 +12,7 @@ import ru.clevertec.newsservice.dto.request.NewsRequest;
 import ru.clevertec.newsservice.dto.response.NewsResponse;
 import ru.clevertec.newsservice.entity.News;
 import ru.clevertec.newsservice.exception.NewsNotFoundException;
+import ru.clevertec.newsservice.exception.NoSuchSearchFieldException;
 import ru.clevertec.newsservice.mapper.NewsMapper;
 import ru.clevertec.newsservice.repository.NewsRepository;
 import ru.clevertec.newsservice.util.NewsTestData;
@@ -231,4 +232,78 @@ class NewsServiceImplTest {
         verify(newsRepository, times(1)).delete(news);
     }
 
+
+    @Nested
+    class search {
+
+        @Test
+        void shouldGetNewsWithFullTextSearch() {
+            //given
+            List<News> news = NewsTestData.getListNewsSearch();
+            List<NewsResponse> newsResponses = NewsTestData.getListNewsResponseSearch();
+
+            when(newsRepository.searchBy(NewsTestData.SEARCH_VALUE, 1,
+                    NewsTestData.SEARCH_FIELDS_ARRAY))
+                    .thenReturn(news);
+            when(newsMapper.newsToResponse(news.get(0)))
+                    .thenReturn(newsResponses.get(0));
+            when(newsMapper.newsToResponse(news.get(1)))
+                    .thenReturn(newsResponses.get(1));
+
+            //when
+            List<NewsResponse> actualNews = newsService.searchNews(
+                    NewsTestData.SEARCH_VALUE,
+                    NewsTestData.SEARCH_FIELDS,
+                    1
+            );
+
+            //then
+            assertEquals(newsResponses.size(), actualNews.size());
+            verify(newsRepository, times(1))
+                    .searchBy(NewsTestData.SEARCH_VALUE, 1,
+                            NewsTestData.SEARCH_FIELDS_ARRAY);
+            verify(newsMapper, times(2)).newsToResponse(any());
+        }
+
+        @Test
+        void shouldGetNewsWithFullTextSearch_emptyFields() {
+            //given
+            List<News> news = NewsTestData.getListNewsSearch();
+            List<NewsResponse> newsResponses = NewsTestData.getListNewsResponseSearch();
+
+            when(newsRepository.searchBy(NewsTestData.SEARCH_VALUE, 1,
+                    NewsTestData.SEARCH_FIELDS_ARRAY))
+                    .thenReturn(news);
+            when(newsMapper.newsToResponse(news.get(0)))
+                    .thenReturn(newsResponses.get(0));
+            when(newsMapper.newsToResponse(news.get(1)))
+                    .thenReturn(newsResponses.get(1));
+
+            //when
+            List<NewsResponse> actualNews = newsService.searchNews(
+                    NewsTestData.SEARCH_VALUE,
+                    List.of(),
+                    1
+            );
+
+            //then
+            assertEquals(newsResponses.size(), actualNews.size());
+            verify(newsRepository, times(1))
+                    .searchBy(NewsTestData.SEARCH_VALUE, 1,
+                            NewsTestData.SEARCH_FIELDS_ARRAY);
+            verify(newsMapper, times(2)).newsToResponse(any());
+        }
+
+
+        @Test
+        void shouldNotGetCommentsWithFullTextSearch_whenFieldsIsNotValid() {
+            // given, when, then
+            assertThrows(
+                    NoSuchSearchFieldException.class,
+                    () -> newsService.searchNews(
+                            NewsTestData.SEARCH_VALUE,
+                            NewsTestData.SEARCH_NOT_VALID_FIELDS, 1));
+        }
+
+    }
 }

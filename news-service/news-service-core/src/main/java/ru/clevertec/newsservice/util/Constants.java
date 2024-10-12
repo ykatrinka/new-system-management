@@ -19,4 +19,8 @@ public class Constants {
      * Сообщение об отсутствующем идентификаторе новости.
      */
     public static final String ERROR_NO_SUCH_NEWS = "No such News with id ";
+    /**
+     * Сообщение о не корректно указанном поле для полнотекстового поиска.
+     */
+    public static final String ERROR_NO_SUCH_FIELD = "No such search field";
 }

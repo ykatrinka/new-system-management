@@ -20,6 +20,14 @@ public class NewsTestData {
     public static final Long NEWS_ID_NOT_FOUND = 42L;
     public static final Long NEWS_ID_UPD = 2L;
 
+    public static final int SEARCH_LIMIT = 10;
+    public static final String SEARCH_VALUE = "News";
+    public static final List<String> SEARCH_FIELDS = List.of("title", "text");
+    public static final List<String> SEARCH_NOT_VALID_FIELDS = List.of("username", "text");
+    public static final String[] SEARCH_FIELDS_ARRAY = {"title", "text"};
+    public static final String[] SEARCH_NOT_VALID_FIELDS_ARRAY = {"username", "text"};
+
+
     public static NewsRequest getNewsRequest() {
         return NewsRequest.builder()
                 .time(null)
@@ -47,6 +55,24 @@ public class NewsTestData {
                         .build(),
                 NewsResponse.builder()
                         .id(2L)
+                        .time(CREATED_DATE)
+                        .title(NEWS_TITLE)
+                        .text(NEWS_TEXT)
+                        .build()
+        );
+    }
+
+    //search
+    public static List<NewsResponse> getListNewsResponse() {
+        return List.of(
+                NewsResponse.builder()
+                        .id(NEWS_ID)
+                        .time(CREATED_DATE)
+                        .title(NEWS_TITLE)
+                        .text(NEWS_TEXT)
+                        .build(),
+                NewsResponse.builder()
+                        .id(NEWS_ID)
                         .time(CREATED_DATE)
                         .title(NEWS_TITLE)
                         .text(NEWS_TEXT)

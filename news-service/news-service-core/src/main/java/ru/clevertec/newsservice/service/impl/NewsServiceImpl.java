@@ -1,6 +1,7 @@
 package ru.clevertec.newsservice.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -9,10 +10,12 @@ import ru.clevertec.newsservice.dto.request.NewsRequest;
 import ru.clevertec.newsservice.dto.response.NewsResponse;
 import ru.clevertec.newsservice.entity.News;
 import ru.clevertec.newsservice.exception.NewsNotFoundException;
+import ru.clevertec.newsservice.exception.NoSuchSearchFieldException;
 import ru.clevertec.newsservice.mapper.NewsMapper;
 import ru.clevertec.newsservice.repository.NewsRepository;
 import ru.clevertec.newsservice.service.NewsService;
 import ru.clevertec.newsservice.util.Constants;
+import ru.clevertec.newsservice.util.ReflectionUtil;
 
 import java.util.List;
 
@@ -107,4 +110,33 @@ public class NewsServiceImpl implements NewsService {
         newsRepository.findById(newsId).ifPresent(newsRepository::delete);
     }
 
+    /**
+     * Метод для полнотекстового поиска
+     * по выбранным полям.
+     *
+     * @param text   Текст для поиска.
+     * @param limit  Количество элементов.
+     * @param fields Перечень полей для поиска.
+     */
+    @Override
+    public List<NewsResponse> searchNews(String text, List<String> fields, int limit) {
+
+        List<String> searchableFields = ReflectionUtil
+                .getFieldsByAnnotation(News.class, FullTextField.class);
+        List<String> fieldsToSearchBy = fields.isEmpty() ? searchableFields : fields;
+
+        boolean containsInvalidField = fieldsToSearchBy
+                .stream()
+                .anyMatch(f -> !searchableFields.contains(f));
+
+        if (containsInvalidField) {
+            throw NoSuchSearchFieldException.getInstance();
+        }
+
+        List<News> news = newsRepository.searchBy(
+                text, limit, fieldsToSearchBy.toArray(new String[0]));
+        return news.stream()
+                .map(newsMapper::newsToResponse)
+                .toList();
+    }
 }

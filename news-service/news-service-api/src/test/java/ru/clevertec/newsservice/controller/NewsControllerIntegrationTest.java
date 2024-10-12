@@ -16,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -23,6 +24,7 @@ import ru.clevertec.newsservice.dto.request.NewsRequest;
 import ru.clevertec.newsservice.dto.response.NewsResponse;
 import ru.clevertec.newsservice.util.NewsTestData;
 
+import java.net.URI;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -207,5 +209,76 @@ class NewsControllerIntegrationTest {
         //then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
+
+    @Test
+    void shouldGetNewsWithFullTextSearch() throws JsonProcessingException {
+        //given
+        String searchValue = NewsTestData.SEARCH_VALUE;
+        List<String> searchFields = NewsTestData.SEARCH_FIELDS;
+        int searchLimit = NewsTestData.SEARCH_LIMIT;
+
+        //when
+        URI uri = UriComponentsBuilder.fromHttpUrl(restTemplate.getRootUri())
+                .path("/news/search")
+                .queryParam("text", searchValue)
+                .queryParam("fields", searchFields)
+                .queryParam("limit", String.valueOf(searchLimit))
+                .build().toUri();
+
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                uri,
+                HttpMethod.GET,
+                null,
+                String.class);
+
+        List<NewsResponse> actualResponse = objectMapper.readValue(
+                responseEntity.getBody(),
+                new TypeReference<>() {
+                });
+
+        //then
+        assertAll(
+                () -> assertNotNull(actualResponse),
+                () -> assertEquals(1, actualResponse.size()),
+                () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
+                () -> assertEquals(MediaType.APPLICATION_JSON,
+                        responseEntity.getHeaders().getContentType())
+        );
+
+    }
+
+    @Test
+    void shouldNotGetNewsWithFullTextSearch_whenSearchFieldsIsNotValid() {
+
+        //given
+        String searchValue = NewsTestData.SEARCH_VALUE;
+        List<String> searchFields = NewsTestData.SEARCH_NOT_VALID_FIELDS;
+        int searchLimit = NewsTestData.SEARCH_LIMIT;
+
+        //when
+        URI uri = UriComponentsBuilder.fromHttpUrl(restTemplate.getRootUri())
+                .path("/news/search")
+                .queryParam("text", searchValue)
+                .queryParam("fields", searchFields)
+                .queryParam("limit", String.valueOf(searchLimit))
+                .build().toUri();
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                uri,
+                HttpMethod.GET,
+                null,
+                String.class);
+
+        //then
+        assertAll(
+                () -> assertEquals(HttpStatus.BAD_REQUEST,
+                        responseEntity.getStatusCode()),
+                () -> assertEquals(MediaType.APPLICATION_JSON,
+                        responseEntity.getHeaders().getContentType())
+        );
+
+    }
+
 
 }
