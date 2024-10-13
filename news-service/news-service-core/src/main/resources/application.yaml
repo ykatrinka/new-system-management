@@ -9,13 +9,28 @@ spring:
   jpa:
     generate-ddl: false
     show-sql: true
+  properties:
+    hibernate:
+      search:
+        backend:
+          type: lucene
+          directory.root: ./data/index
   feign:
     client:
       comments-service:
         name: comments-service
         url: "http://localhost:8082"
-
-
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    ru.clevertec: debug
+  file:
+    name: ./logs/log-file.log
 
 server:
   port: 8081
+
+cache:
+  capacity: 10
+  type: LRU

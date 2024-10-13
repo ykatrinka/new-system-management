@@ -45,6 +45,12 @@
 
 При написании интеграционных тестов использовались зависимости Testcontainers и WireMock
 
+### Реализовано:
+
+- логирование запрос-ответ в аспектном стиле (сервисный слой и контроллеры)
+- глобальную обработку исключений
+- реализован кастомный кэш: LFU и LRU реализации с обработкой в аспекте AOP
+
 ---
 
 # API руководство
@@ -66,12 +72,11 @@ HTTP Method: POST
 
 Parameters:
 
-| Name        | Type   | Description                          |
-|-------------|--------|--------------------------------------|
-| newsId      | Long   | Идентификатор новости                |
-| username    | String | Имя пользователя                     |
-| text        | String | Текст комментария                    |
-
+| Name     | Type   | Description           |
+|----------|--------|-----------------------|
+| newsId   | Long   | Идентификатор новости |
+| username | String | Имя пользователя      |
+| text     | String | Текст комментария     |
 
 Пример запроса:
 http://localhost:8082/comments
@@ -97,11 +102,11 @@ HTTP Method: PUT
 
 Parameters:
 
-| Name        | Type   | Description                          |
-|-------------|--------|--------------------------------------|
-| newsId      | Long   | Идентификатор новости                |
-| username    | String | Имя пользователя                     |
-| text        | String | Текст комментария                    |
+| Name     | Type   | Description           |
+|----------|--------|-----------------------|
+| newsId   | Long   | Идентификатор новости |
+| username | String | Имя пользователя      |
+| text     | String | Текст комментария     |
 
 Пример запроса:
 http://localhost:8082/comments/1
@@ -136,7 +141,6 @@ HTTP Method: GET
 
 Примеры запроса:
 http://localhost:8082/comments/search?text=content&fields=username&fields=text&limit=15
-
 
 ### Ответ об ошибке
 

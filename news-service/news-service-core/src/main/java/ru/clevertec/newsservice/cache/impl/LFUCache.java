@@ -1,0 +1,82 @@
+package ru.clevertec.newsservice.cache.impl;
+
+import org.springframework.beans.factory.annotation.Value;
+import ru.clevertec.newsservice.cache.CustomCache;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+/**
+ * @param <K> тип идентификатора.
+ * @param <V> тип объекта.
+ *            Реализация LFU кеширования.
+ * @author Katerina
+ * @version 1.0.0
+ */
+public class LFUCache<K, V> implements CustomCache<K, V> {
+
+    @Value("${cache.capacity}")
+    private int capacity = 10;
+    private final Map<K, V> cacheList = new HashMap<>();
+    private final Map<K, Integer> frequencyMap = new HashMap<>();
+
+    /**
+     * Добавление объекта в кэш.
+     *
+     * @param key   идентификатор объекта.
+     * @param value объект.
+     */
+    @Override
+    public void put(K key, V value) {
+        if (!cacheList.containsKey(key) && cacheList.size() == capacity) {
+            removeOldest();
+        }
+
+        cacheList.put(key, value);
+        frequencyMap.put(key, frequencyMap.getOrDefault(key, 0) + 1);
+    }
+
+    /**
+     * Получение объекта из кэша.
+     *
+     * @param key идентификатор объекта.
+     */
+    @Override
+    public Optional<V> get(K key) {
+        if (!cacheList.containsKey(key)) {
+            return Optional.empty();
+        }
+
+        frequencyMap.put(key, frequencyMap.getOrDefault(key, 0) + 1);
+        return Optional.ofNullable(cacheList.get(key));
+    }
+
+    /**
+     * Удаление объекта из кэша.
+     *
+     * @param key идентификатор объекта.
+     */
+    @Override
+    public void delete(K key) {
+        cacheList.remove(key);
+        frequencyMap.remove(key);
+    }
+
+    /**
+     * Метод удаляет старый элемент когда список кешированных
+     * объектов перезаполнен.
+     */
+    private void removeOldest() {
+        Optional<K> removedKey = frequencyMap.values().stream()
+                .min(Integer::compareTo)
+                .flatMap(min -> frequencyMap.entrySet().stream()
+                        .filter(entry -> entry.getValue().equals(min))
+                        .map(Map.Entry::getKey)
+                        .findFirst());
+
+        removedKey.ifPresent(cacheList::remove);
+        removedKey.ifPresent(frequencyMap::remove);
+    }
+
+}

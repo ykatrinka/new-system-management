@@ -43,4 +43,23 @@ public class Constants {
     public static final int MAX_USERNAME_LENGTH = 20;
 
     public static final String NEWS_ID = "newsId";
+
+    /**
+     * Сообщение когда класс не получен.
+     */
+    public static final String ERROR_INVALID_CLASS = "Invalid class %s";
+    /**
+     * Сообщение о проблемах индексации.
+     */
+    public static final String ERROR_INDEX_INTERRUPTED = "Index interrupted";
+
+    /**
+     * Путь к классу комментариев.
+     */
+    public static final String PATH_COMMENT = "ru.clevertec.commentsservice.entity.Comment";
+
+    /**
+     * Тип применяемого кеширования.
+     */
+    public static final String CACHE_TYPE = "${cache.type}";
 }
