@@ -1,0 +1,18 @@
+plugins {
+    id 'modules-config'
+    id 'spring-conventions'
+}
+
+apply from: "$rootProject.rootDir/buildSrc/versions.gradle"
+
+dependencies {
+
+    implementation project(':comments-service-core')
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation "org.testcontainers:postgresql"
+    testImplementation "org.testcontainers:junit-jupiter"
+
+}

@@ -1,0 +1,222 @@
+package ru.clevertec.commentsservice.service.impl;
+
+import feign.FeignException;
+import lombok.RequiredArgsConstructor;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.clevertec.commentsservice.dto.request.CommentRequest;
+import ru.clevertec.commentsservice.dto.response.CommentResponse;
+import ru.clevertec.commentsservice.dto.response.NewsResponse;
+import ru.clevertec.commentsservice.entity.Comment;
+import ru.clevertec.commentsservice.exception.CommentNotFoundException;
+import ru.clevertec.commentsservice.exception.FeignServerErrorException;
+import ru.clevertec.commentsservice.exception.NewsNotFoundException;
+import ru.clevertec.commentsservice.exception.NoSuchSearchFieldException;
+import ru.clevertec.commentsservice.feignclient.NewsFeignClient;
+import ru.clevertec.commentsservice.mapper.CommentMapper;
+import ru.clevertec.commentsservice.repository.CommentRepository;
+import ru.clevertec.commentsservice.service.CommentService;
+import ru.clevertec.commentsservice.util.Constants;
+import ru.clevertec.commentsservice.util.ReflectionUtil;
+
+import java.util.List;
+
+/**
+ * * @author Katerina
+ * * @version 1.0.0
+ * Сервис, реализующий работу с комментариями.
+ */
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class CommentServiceImpl implements CommentService {
+
+    /**
+     * Класс репозитория для работы с базой данных.
+     */
+    private final CommentRepository commentRepository;
+    /**
+     * Mapper для конвертации сущностей комментария.
+     */
+    private final CommentMapper commentMapper;
+    /**
+     * Open feign client for get data in news service.
+     */
+    private final NewsFeignClient newsClient;
+
+    /**
+     * Метод для добавления нового комментария в базу данных.
+     *
+     * @param commentRequest Полученные данные для создания комментария.
+     * @return CommentResponse
+     * Возвращает созданную сущность с новым сгенерированным id.
+     */
+    @Override
+    public CommentResponse createComment(CommentRequest commentRequest) {
+        checkNewsIsExists(commentRequest.newsId());
+
+        Comment comment = commentMapper.requestToComment(commentRequest);
+        Comment savedComment = commentRepository.save(comment);
+
+        return commentMapper.commentToResponse(savedComment);
+    }
+
+    /**
+     * Метод для получения списка комментариев с учетом пагинации из базы данных.
+     *
+     * @param pageNumber Номер страницы.
+     * @return Список комментариев из базы данных.
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<CommentResponse> getAllComments(int pageNumber) {
+        PageRequest pageable = PageRequest.of(pageNumber, Constants.COMMENTS_PAGE_SIZE);
+        Page<Comment> pageComments = commentRepository.findAll(pageable);
+
+        return pageComments.getContent().stream()
+                .map(commentMapper::commentToResponse)
+                .toList();
+    }
+
+
+    /**
+     * Метод для получения комментария по идентификатору из базы данных.
+     *
+     * @param commentsId идентификатор комментария для получения.
+     * @return Найденный комментарий из базы данных.
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public CommentResponse getCommentById(Long commentsId) {
+        return commentRepository.findById(commentsId)
+                .map(commentMapper::commentToResponse)
+                .orElseThrow(
+                        () -> CommentNotFoundException.getById(commentsId)
+                );
+    }
+
+    /**
+     * Метод для обновления комментария в базе данных.
+     *
+     * @param commentRequest Полученные данные для обновления комментария.
+     * @param commentId      идентификатор обновляемого комментария.
+     * @return CommentResponse
+     * Возвращает обновленная сущность.
+     */
+    @Override
+    public CommentResponse updateComment(Long commentId, CommentRequest commentRequest) {
+        checkNewsIsExists(commentRequest.newsId());
+
+        Comment comment = commentRepository.findById(commentId)
+                .map(updComment -> commentMapper.updateFromRequest(commentId, commentRequest))
+                .orElseThrow(
+                        () -> CommentNotFoundException.getById(commentId)
+                );
+        Comment updatedComment = commentRepository.save(comment);
+
+        return commentMapper.commentToResponse(updatedComment);
+    }
+
+    /**
+     * Метод для удаления комментария по id из базы данных.
+     *
+     * @param commentId идентификатор удаляемого комментария.
+     */
+    @Override
+    public void deleteComment(Long commentId) {
+        commentRepository.findById(commentId).ifPresent(commentRepository::delete);
+    }
+
+    /**
+     * Метод для полнотекстового поиска
+     * по выбранным полям.
+     *
+     * @param text   Текст для поиска.
+     * @param limit  Количество элементов.
+     * @param fields Перечень полей для поиска.
+     */
+    @Override
+    public List<CommentResponse> searchComments(String text, List<String> fields, int limit) {
+
+        List<String> searchableFields = ReflectionUtil
+                .getFieldsByAnnotation(Comment.class, FullTextField.class);
+        List<String> fieldsToSearchBy = fields.isEmpty() ? searchableFields : fields;
+
+        boolean containsInvalidField = fieldsToSearchBy
+                .stream()
+                .anyMatch(f -> !searchableFields.contains(f));
+
+        if (containsInvalidField) {
+            throw NoSuchSearchFieldException.getInstance();
+        }
+
+        List<Comment> comments = commentRepository.searchBy(
+                text, limit, fieldsToSearchBy.toArray(new String[0]));
+        return comments.stream()
+                .map(commentMapper::commentToResponse)
+                .toList();
+    }
+
+    /**
+     * Метод выполняет запрос к news-service.
+     * Проверяется статус и наличие новости с указанным id.
+     * В случаях не найденной новости или ошибки соединения
+     * выбрасывается исключение с сообщением об ошибке.
+     *
+     * @param newsId Идентификатор новости.
+     */
+    private void checkNewsIsExists(Long newsId) {
+        try {
+            ResponseEntity<NewsResponse> newsResponse = newsClient.getNewsById(newsId);
+
+            if (newsResponse.getStatusCode().is5xxServerError()) {
+                throw FeignServerErrorException.getInstance(Constants.ERROR_FEIGN_NEWS);
+            }
+
+            if (newsResponse.getBody() == null) {
+                throw NewsNotFoundException.getById(newsId);
+            }
+
+        } catch (FeignException.NotFound e) {
+            throw NewsNotFoundException.getById(newsId);
+        } catch (FeignException e) {
+            throw FeignServerErrorException.getInstance(Constants.ERROR_FEIGN_NEWS);
+        }
+    }
+
+    /**
+     * Удаляет все комментарии по идентификатору новости.
+     *
+     * @param newsId Идентификатор новости.
+     */
+    @Override
+    public void deleteCommentsByNewsId(Long newsId) {
+        commentRepository.deleteAllByNewsId(newsId);
+    }
+
+    /**
+     * Получает список комментариев
+     * по идентификатору новости (с учетом пагинации).
+     *
+     * @param newsId     идентификатор новости.
+     * @param pageNumber Номер страницы.
+     * @return Список комментариев по указанной странице.
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public List<CommentResponse> getCommentsByNewsId(long newsId, int pageNumber) {
+        checkNewsIsExists(newsId);
+
+        PageRequest pageable = PageRequest.of(pageNumber, Constants.COMMENTS_PAGE_SIZE);
+        Page<Comment> pageComments = commentRepository.findByNewsId(newsId, pageable);
+
+        return pageComments.getContent().stream()
+                .map(commentMapper::commentToResponse)
+                .toList();
+    }
+
+}
