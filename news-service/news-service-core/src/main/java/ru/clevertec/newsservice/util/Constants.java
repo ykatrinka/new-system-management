@@ -47,4 +47,23 @@ public class Constants {
 
     public static final String PAGE_NUMBER_PARAM = "pageNumber";
     public static final String FIRST_PAGE = "1";
+
+    /**
+     * Сообщение когда класс не получен.
+     */
+    public static final String ERROR_INVALID_CLASS = "Invalid class %s";
+    /**
+     * Сообщение о проблемах индексации.
+     */
+    public static final String ERROR_INDEX_INTERRUPTED = "Index interrupted";
+
+    /**
+     * Путь к классу комментариев.
+     */
+    public static final String PATH_NEWS = "ru.clevertec.newsservice.entity.News";
+
+    /**
+     * Тип применяемого кеширования.
+     */
+    public static final String CACHE_TYPE = "${cache.type}";
 }
