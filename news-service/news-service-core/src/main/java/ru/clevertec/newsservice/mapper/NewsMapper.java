@@ -3,8 +3,12 @@ package ru.clevertec.newsservice.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.clevertec.newsservice.dto.request.NewsRequest;
+import ru.clevertec.newsservice.dto.response.CommentResponse;
+import ru.clevertec.newsservice.dto.response.NewsCommentsResponse;
 import ru.clevertec.newsservice.dto.response.NewsResponse;
 import ru.clevertec.newsservice.entity.News;
+
+import java.util.List;
 
 /**
  * @author Katerina
@@ -42,4 +46,13 @@ public interface NewsMapper {
     @Mapping(target = "id", source = "newsId")
     News updateFromRequest(Long newsId, NewsRequest newsRequest);
 
+    /**
+     * Метод конвертирует данные типа News в NewsCommentsResponse.
+     *
+     * @param news     объект для конвертации.
+     * @param comments Список комментариев.
+     * @return объект типа NewsCommentsResponse.
+     */
+    @Mapping(target = "comments", source = "comments")
+    NewsCommentsResponse newsToCommentsResponse(News news, List<CommentResponse> comments);
 }

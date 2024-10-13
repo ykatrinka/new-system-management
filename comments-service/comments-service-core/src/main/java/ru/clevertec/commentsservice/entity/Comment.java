@@ -38,22 +38,37 @@ import java.time.LocalDateTime;
 @Table(name = "comment")
 public class Comment implements Serializable {
 
+    /**
+     * Идентификатор.
+     */
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 
+    /**
+     * Время создания.
+     */
     @Column
     @CreationTimestamp
     private LocalDateTime time;
 
+    /**
+     * Текст комментария.
+     */
     @FullTextField
     @Column
     private String text;
 
+    /**
+     * Пользователь.
+     */
     @FullTextField
     @Column
     private String username;
 
+    /**
+     * Идентификатор новости.
+     */
     @Column(name = "news_id")
     private Long newsId;
 

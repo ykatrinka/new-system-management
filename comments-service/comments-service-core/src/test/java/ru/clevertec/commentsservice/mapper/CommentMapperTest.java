@@ -40,11 +40,8 @@ class CommentMapperTest {
 
     @Test
     void shouldConvertCommentRequestToComment_whenRequestIsNull() {
-        //given
-        CommentRequest commentRequest = null;
-
-        //when
-        Comment actualComment = commentMapper.requestToComment(commentRequest);
+        //given, when
+        Comment actualComment = commentMapper.requestToComment(null);
 
         //then
         assertAll(
@@ -73,11 +70,8 @@ class CommentMapperTest {
 
     @Test
     void shouldConvertCommentToCommentResponse_whenCommentIsNull() {
-        //given
-        Comment comment = null;
-
-        //when
-        CommentResponse actualCommentResponse = commentMapper.commentToResponse(comment);
+        //given, when
+        CommentResponse actualCommentResponse = commentMapper.commentToResponse(null);
 
         //then
         assertAll(
@@ -109,13 +103,8 @@ class CommentMapperTest {
 
     @Test
     void shouldUpdateCommentFromCommentRequest_whenUpdateCommentIsNull() {
-        //given
-        CommentRequest commentRequest = null;
-        Long commentId = null;
-
-
-        //when
-        Comment actualComment = commentMapper.updateFromRequest(commentId, commentRequest);
+        //given, when
+        Comment actualComment = commentMapper.updateFromRequest(null, null);
 
         //then
         assertAll(

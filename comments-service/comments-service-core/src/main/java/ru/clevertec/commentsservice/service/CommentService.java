@@ -1,6 +1,7 @@
 package ru.clevertec.commentsservice.service;
 
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.commentsservice.dto.request.CommentRequest;
 import ru.clevertec.commentsservice.dto.response.CommentResponse;
 
@@ -61,7 +62,25 @@ public interface CommentService {
      * @param text   Текст для поиска.
      * @param limit  Количество элементов.
      * @param fields Перечень полей для поиска.
+     * @return Список комментариев.
      */
     List<CommentResponse> searchComments(String text, List<String> fields, int limit);
 
+    /**
+     * Удаляет все комментарии по идентификатору новости.
+     *
+     * @param newsId Идентификатор новости.
+     */
+    void deleteCommentsByNewsId(Long newsId);
+
+    /**
+     * Получает список комментариев
+     * по идентификатору новости (с учетом пагинации).
+     *
+     * @param newsId     идентификатор новости.
+     * @param pageNumber Номер страницы.
+     * @return Список комментариев по указанной странице.
+     */
+    @Transactional(readOnly = true)
+    List<CommentResponse> getCommentsByNewsId(long newsId, int pageNumber);
 }

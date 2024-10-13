@@ -8,6 +8,8 @@
 
 Данный микросервис работает с новостями. Архитектурный стиль: REST. Вывод данных в формате JSON
 
+Сервис связывается с микросервисом comments-service с использованием Open Feign 
+
 ### Сущности:
 
 Новость (News):
@@ -38,9 +40,9 @@
 * Gradle 8.5
 * Hibernate ORM
 * Lucene
-*
+* OpenFeign
 
-При написании интеграционных тестов использовались зависимости Testcontainers
+При написании интеграционных тестов использовались зависимости Testcontainers и WireMock
 
 ---
 
@@ -128,6 +130,24 @@ HTTP Method: GET
 
 Примеры запроса:
 http://localhost:8081/news/search?text=content&fields=title&fields=text&limit=15
+
+---
+Описание: Этот метод получает новость со списком комментариев (с пагинацией).
+Endpoint: /{newsId}/comments
+HTTP Method: GET
+
+Примеры запроса:
+http://localhost:8081/1/comments
+http://localhost:8081/1/comments?pageNumber=1
+
+
+---
+Описание: Этот метод получает комментарий по идентификатору.
+Endpoint: /{newsId}/comments/{commentId}
+HTTP Method: GET
+
+Примеры запроса:
+http://localhost:8081/1/comments/1
 
 ### Ответ об ошибке
 

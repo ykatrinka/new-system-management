@@ -5,9 +5,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.clevertec.newsservice.dto.request.NewsRequest;
+import ru.clevertec.newsservice.dto.response.CommentResponse;
+import ru.clevertec.newsservice.dto.response.NewsCommentsResponse;
 import ru.clevertec.newsservice.dto.response.NewsResponse;
 import ru.clevertec.newsservice.entity.News;
 import ru.clevertec.newsservice.util.NewsTestData;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -71,6 +75,32 @@ class NewsMapperTest {
                 () -> assertEquals(newsRequest.time(), actualNews.getTime()),
                 () -> assertEquals(newsRequest.title(), actualNews.getTitle()),
                 () -> assertEquals(newsRequest.text(), actualNews.getText())
+        );
+    }
+
+    @Test
+    void shouldConvertNewsToNewsResponseWithComments() {
+        //given
+        News news = NewsTestData.getFillNewsWithId();
+        List<CommentResponse> commentResponses = NewsTestData.getCommentResponsesForMapper();
+
+        //when
+        NewsCommentsResponse actualNewsCommentsResponse = newsMapper.newsToCommentsResponse(news, commentResponses);
+
+        //then
+        assertAll(
+                () -> assertNotNull(actualNewsCommentsResponse),
+                () -> assertEquals(news.getId(), actualNewsCommentsResponse.id()),
+                () -> assertEquals(news.getTime(), actualNewsCommentsResponse.time()),
+                () -> assertEquals(news.getTitle(), actualNewsCommentsResponse.title()),
+                () -> assertEquals(news.getText(), actualNewsCommentsResponse.text()),
+                () -> assertNotNull(actualNewsCommentsResponse.comments()),
+                () -> assertEquals(commentResponses.size(), actualNewsCommentsResponse.comments().size()),
+                () -> assertEquals(commentResponses.getFirst().id(), actualNewsCommentsResponse.comments().getFirst().id()),
+                () -> assertEquals(commentResponses.getFirst().time(), actualNewsCommentsResponse.comments().getFirst().time()),
+                () -> assertEquals(commentResponses.getFirst().username(), actualNewsCommentsResponse.comments().getFirst().username()),
+                () -> assertEquals(commentResponses.getFirst().newsId(), actualNewsCommentsResponse.comments().getFirst().newsId()),
+                () -> assertEquals(commentResponses.getFirst().text(), actualNewsCommentsResponse.comments().getFirst().text())
         );
     }
 

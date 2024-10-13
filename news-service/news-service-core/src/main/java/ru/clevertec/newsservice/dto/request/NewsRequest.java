@@ -6,6 +6,9 @@ import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
 
+import static ru.clevertec.newsservice.util.Constants.MAX_TITLE_LENGTH;
+import static ru.clevertec.newsservice.util.Constants.MIN_TITLE_LENGTH;
+
 /**
  * @param time  Время создания новости (генерируется автоматически).
  * @param title Заголовок новости.
@@ -19,7 +22,7 @@ import java.time.LocalDateTime;
 public record NewsRequest(
         LocalDateTime time,
         @NotBlank
-        @Length(min = 1, max = 255)
+        @Length(min = MIN_TITLE_LENGTH, max = MAX_TITLE_LENGTH)
         String title,
         @NotBlank
         String text

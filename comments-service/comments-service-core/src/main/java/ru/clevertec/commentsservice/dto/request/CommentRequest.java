@@ -7,6 +7,9 @@ import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
 
+import static ru.clevertec.commentsservice.util.Constants.MAX_USERNAME_LENGTH;
+import static ru.clevertec.commentsservice.util.Constants.MIN_USERNAME_LENGTH;
+
 /**
  * @param username Имя пользователя.
  * @param newsId   Идентификатор новости.
@@ -21,7 +24,7 @@ import java.time.LocalDateTime;
 public record CommentRequest(
 
         @NotNull
-        @Length(min = 1, max = 50)
+        @Length(min = MIN_USERNAME_LENGTH, max = MAX_USERNAME_LENGTH)
         String username,
 
         @NotNull

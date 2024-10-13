@@ -8,8 +8,10 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.clevertec.newsservice.exception.CommentNotFoundException;
 import ru.clevertec.newsservice.exception.NewsNotFoundException;
 import ru.clevertec.newsservice.exception.NoSuchSearchFieldException;
+import ru.clevertec.newsservice.exception.NotMatchNewsCommentException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -59,6 +61,43 @@ public class ExceptionHandlingController {
 
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
+
+    /**
+     * Сообщение об отсутствующем идентификаторе комментария.
+     *
+     * @param e Тип выброшенного исключения
+     * @return ErrorMessage
+     * Данные со статусом и описанием ошибки.
+     */
+    @ExceptionHandler(value = {CommentNotFoundException.class})
+    public ResponseEntity<ErrorMessage> handleCommentNotFoundExceptions(CommentNotFoundException e) {
+        ErrorMessage errorMessage = ErrorMessage.builder()
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .timeStamp(LocalDateTime.now())
+                .message(e.getMessage())
+                .build();
+
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Идентификатор комментария не соответствует выбранной новости.
+     *
+     * @param e Тип выброшенного исключения
+     * @return ErrorMessage
+     * Данные со статусом и описанием ошибки.
+     */
+    @ExceptionHandler(value = {NotMatchNewsCommentException.class})
+    public ResponseEntity<ErrorMessage> handleNotMatchNewsCommentExceptions(NotMatchNewsCommentException e) {
+        ErrorMessage errorMessage = ErrorMessage.builder()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .timeStamp(LocalDateTime.now())
+                .message(e.getMessage())
+                .build();
+
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
 
     /**
      * Сообщение при ошибках валидации (не корректные данные).

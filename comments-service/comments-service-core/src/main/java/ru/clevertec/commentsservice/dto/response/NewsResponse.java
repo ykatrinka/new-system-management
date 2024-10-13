@@ -1,4 +1,4 @@
-package ru.clevertec.newsservice.dto.response;
+package ru.clevertec.commentsservice.dto.response;
 
 import lombok.Builder;
 
@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
  * @param text  Текст новости.
  * @author Katerina
  * @version 1.0.0
+ * <p>
  * Сущность для передачи данных о новости пользователю.
  */
 @Builder

@@ -9,6 +9,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.clevertec.commentsservice.exception.CommentNotFoundException;
+import ru.clevertec.commentsservice.exception.FeignServerErrorException;
+import ru.clevertec.commentsservice.exception.NewsNotFoundException;
 import ru.clevertec.commentsservice.exception.NoSuchSearchFieldException;
 
 import java.time.LocalDateTime;
@@ -32,7 +34,7 @@ public class ExceptionHandlingController {
      * Данные со статусом и описанием ошибки.
      */
     @ExceptionHandler(value = {CommentNotFoundException.class})
-    public ResponseEntity<ErrorMessage> handleNewsNotFoundExceptions(CommentNotFoundException e) {
+    public ResponseEntity<ErrorMessage> handleCommentNotFoundExceptions(CommentNotFoundException e) {
         ErrorMessage errorMessage = ErrorMessage.builder()
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .timeStamp(LocalDateTime.now())
@@ -59,6 +61,43 @@ public class ExceptionHandlingController {
 
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
+
+    /**
+     * Сообщение при ошибочно указанном идентификаторе новости.
+     *
+     * @param e Тип выброшенного исключения
+     * @return ErrorMessage
+     * Данные со статусом и описанием ошибки.
+     */
+    @ExceptionHandler(value = {NewsNotFoundException.class})
+    public ResponseEntity<ErrorMessage> handleNewsNotFoundExceptions(NewsNotFoundException e) {
+        ErrorMessage errorMessage = ErrorMessage.builder()
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .timeStamp(LocalDateTime.now())
+                .message(e.getMessage())
+                .build();
+
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Сообщение при ошибках соединения к сторонним серверам.
+     *
+     * @param e Тип выброшенного исключения
+     * @return ErrorMessage
+     * Данные со статусом и описанием ошибки.
+     */
+    @ExceptionHandler(value = {FeignServerErrorException.class})
+    public ResponseEntity<ErrorMessage> handleFeignServerErrorExceptions(FeignServerErrorException e) {
+        ErrorMessage errorMessage = ErrorMessage.builder()
+                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .timeStamp(LocalDateTime.now())
+                .message(e.getMessage())
+                .build();
+
+        return new ResponseEntity<>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 
     /**
      * Сообщение при ошибках валидации (не корректные данные).

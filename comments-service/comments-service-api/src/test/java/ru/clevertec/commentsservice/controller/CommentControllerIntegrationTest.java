@@ -3,6 +3,8 @@ package ru.clevertec.commentsservice.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,11 +23,14 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.clevertec.commentsservice.dto.request.CommentRequest;
 import ru.clevertec.commentsservice.dto.response.CommentResponse;
+import ru.clevertec.commentsservice.dto.response.NewsResponse;
 import ru.clevertec.commentsservice.util.CommentTestData;
 
 import java.net.URI;
 import java.util.List;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -37,6 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
 )
 @Testcontainers
+@WireMockTest(httpPort = 8081)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CommentControllerIntegrationTest {
 
@@ -62,7 +68,21 @@ class CommentControllerIntegrationTest {
         //given
         CommentRequest commentRequest = CommentTestData.getCommentRequest();
         HttpEntity<CommentRequest> httpRequest = new HttpEntity<>(commentRequest);
+        NewsResponse newsResponse = CommentTestData.getNewsResponse();
 
+        WireMock.stubFor(
+                WireMock.get(urlPathEqualTo("/news/" + commentRequest.newsId()))
+                        .willReturn(aResponse()
+                                .withHeader("Content-Type",
+                                        MediaType.APPLICATION_JSON_VALUE)
+                                .withBody(
+                                        objectMapper
+                                                .writeValueAsString(newsResponse)
+                                )
+                        )
+        );
+
+        //when
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 "/comments",
                 HttpMethod.POST,
@@ -70,7 +90,6 @@ class CommentControllerIntegrationTest {
                 String.class);
 
 
-        //when
         CommentResponse actualResponse = objectMapper.readValue(
                 responseEntity.getBody(),
                 new TypeReference<>() {
@@ -84,6 +103,36 @@ class CommentControllerIntegrationTest {
                 () -> assertEquals(commentRequest.newsId(), actualResponse.newsId()),
                 () -> assertEquals(commentRequest.text(), actualResponse.text()),
                 () -> assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode()),
+                () -> assertEquals(MediaType.APPLICATION_JSON, responseEntity.getHeaders().getContentType())
+        );
+
+    }
+
+    @Test
+    void shouldNotCreateComment_whenNewsIdNotFound() {
+        //given
+        CommentRequest commentRequest = CommentTestData.getCommentRequest();
+        HttpEntity<CommentRequest> httpRequest = new HttpEntity<>(commentRequest);
+
+        WireMock.stubFor(
+                WireMock.get(urlPathEqualTo("/news/" + commentRequest.newsId()))
+                        .willReturn(aResponse()
+                                .withHeader("Content-Type",
+                                        MediaType.APPLICATION_JSON_VALUE)
+                                .withStatus(HttpStatus.NOT_FOUND.value())
+                        )
+        );
+
+        //when
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                "/comments",
+                HttpMethod.POST,
+                httpRequest,
+                String.class);
+
+        //then
+        assertAll(
+                () -> assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode()),
                 () -> assertEquals(MediaType.APPLICATION_JSON, responseEntity.getHeaders().getContentType())
         );
 
@@ -194,6 +243,19 @@ class CommentControllerIntegrationTest {
         long commentId = CommentTestData.COMMENT_ID_UPD;
         CommentRequest commentRequest = CommentTestData.getCommentRequest();
         HttpEntity<CommentRequest> httpRequest = new HttpEntity<>(commentRequest);
+        NewsResponse newsResponse = CommentTestData.getNewsResponse();
+
+        WireMock.stubFor(
+                WireMock.get(urlPathEqualTo("/news/" + commentRequest.newsId()))
+                        .willReturn(aResponse()
+                                .withHeader("Content-Type",
+                                        MediaType.APPLICATION_JSON_VALUE)
+                                .withBody(
+                                        objectMapper
+                                                .writeValueAsString(newsResponse)
+                                )
+                        )
+        );
 
         //when
         ResponseEntity<String> responseEntity = restTemplate.exchange(
@@ -215,6 +277,36 @@ class CommentControllerIntegrationTest {
                 () -> assertEquals(commentRequest.newsId(), actualResponse.newsId()),
                 () -> assertEquals(commentRequest.text(), actualResponse.text()),
                 () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
+                () -> assertEquals(MediaType.APPLICATION_JSON, responseEntity.getHeaders().getContentType())
+        );
+    }
+
+    @Test
+    void shouldNotUpdateCommentById_whenNewsNotFound() {
+        //given
+        long commentId = CommentTestData.COMMENT_ID_UPD;
+        CommentRequest commentRequest = CommentTestData.getCommentRequest();
+        HttpEntity<CommentRequest> httpRequest = new HttpEntity<>(commentRequest);
+
+        WireMock.stubFor(
+                WireMock.get(urlPathEqualTo("/news/" + commentRequest.newsId()))
+                        .willReturn(aResponse()
+                                .withHeader("Content-Type",
+                                        MediaType.APPLICATION_JSON_VALUE)
+                                .withStatus(HttpStatus.NOT_FOUND.value())
+                        )
+        );
+
+        //when
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                "/comments/" + commentId,
+                HttpMethod.PUT,
+                httpRequest,
+                String.class);
+
+        //then
+        assertAll(
+                () -> assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode()),
                 () -> assertEquals(MediaType.APPLICATION_JSON, responseEntity.getHeaders().getContentType())
         );
     }
@@ -295,5 +387,125 @@ class CommentControllerIntegrationTest {
 
     }
 
+    @Test
+    void shouldDeleteCommentsByNewsId() {
+        //given
+        long newsId = CommentTestData.NEWS_ID;
+
+        //when
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                "/comments/news/" + newsId,
+                HttpMethod.DELETE,
+                null,
+                String.class);
+
+        //then
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+
+    @Test
+    void shouldGetCommentsByNewsId() throws Exception {
+        //given
+        long newsId = CommentTestData.NEWS_ID;
+        NewsResponse newsResponse = CommentTestData.getNewsResponse();
+
+        WireMock.stubFor(
+                WireMock.get(urlPathEqualTo("/news/" + newsId))
+                        .willReturn(aResponse()
+                                .withHeader("Content-Type",
+                                        MediaType.APPLICATION_JSON_VALUE)
+                                .withBody(
+                                        objectMapper
+                                                .writeValueAsString(newsResponse)
+                                )
+                        )
+        );
+
+        //when
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                "/comments/" + newsId + "/comments",
+                HttpMethod.GET,
+                null,
+                String.class);
+
+        List<CommentResponse> actualResponse = objectMapper.readValue(
+                responseEntity.getBody(),
+                new TypeReference<>() {
+                });
+
+        //then
+        assertAll(
+                () -> assertNotNull(actualResponse),
+                () -> assertEquals(2, actualResponse.size()),
+                () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
+                () -> assertEquals(MediaType.APPLICATION_JSON, responseEntity.getHeaders().getContentType())
+        );
+
+
+    }
+
+    @Test
+    void shouldGetEmptyListCommentsByNewsId() throws JsonProcessingException {
+        //given
+        long newsId = CommentTestData.NEWS_ID_NO_CONTENT;
+        NewsResponse newsResponse = CommentTestData.getNewsResponse();
+
+        WireMock.stubFor(
+                WireMock.get(urlPathEqualTo("/news/" + newsId))
+                        .willReturn(aResponse()
+                                .withHeader("Content-Type",
+                                        MediaType.APPLICATION_JSON_VALUE)
+                                .withBody(
+                                        objectMapper
+                                                .writeValueAsString(newsResponse)
+                                )
+                        )
+        );
+
+        //when
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                "/comments/" + newsId + "/comments",
+                HttpMethod.GET,
+                null,
+                String.class);
+
+        //then
+        assertAll(
+                () -> assertEquals(HttpStatus.NO_CONTENT, responseEntity.getStatusCode()),
+                () -> assertEquals(MediaType.APPLICATION_JSON, responseEntity.getHeaders().getContentType())
+        );
+
+    }
+
+
+    @Test
+    void shouldNotGetListCommentsByNewsId_whenNewsIdNotFound() {
+        //given
+        long newsId = CommentTestData.NEWS_ID_NOT_FOUND;
+
+        WireMock.stubFor(
+                WireMock.get(urlPathEqualTo("/news/" + newsId))
+                        .willReturn(aResponse()
+                                .withHeader("Content-Type",
+                                        MediaType.APPLICATION_JSON_VALUE)
+                                .withStatus(HttpStatus.NOT_FOUND.value())
+                        )
+        );
+
+        //when
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                "/comments/" + newsId + "/comments",
+                HttpMethod.GET,
+                null,
+                String.class);
+
+        //then
+        assertAll(
+                () -> assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode()),
+                () -> assertEquals(MediaType.APPLICATION_JSON, responseEntity.getHeaders().getContentType())
+        );
+
+    }
 
 }

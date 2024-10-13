@@ -1,5 +1,6 @@
 package ru.clevertec.commentsservice.service.impl;
 
+import feign.FeignException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,11 +9,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import ru.clevertec.commentsservice.dto.request.CommentRequest;
 import ru.clevertec.commentsservice.dto.response.CommentResponse;
+import ru.clevertec.commentsservice.dto.response.NewsResponse;
 import ru.clevertec.commentsservice.entity.Comment;
 import ru.clevertec.commentsservice.exception.CommentNotFoundException;
+import ru.clevertec.commentsservice.exception.FeignServerErrorException;
+import ru.clevertec.commentsservice.exception.NewsNotFoundException;
 import ru.clevertec.commentsservice.exception.NoSuchSearchFieldException;
+import ru.clevertec.commentsservice.feignclient.NewsFeignClient;
 import ru.clevertec.commentsservice.mapper.CommentMapper;
 import ru.clevertec.commentsservice.repository.CommentRepository;
 import util.CommentTestData;
@@ -38,41 +45,154 @@ class CommentServiceImplTest {
     @Mock
     private CommentMapper commentMapper;
 
+    @Mock
+    private NewsFeignClient newsFeignClient;
+
     @InjectMocks
     private CommentServiceImpl commentService;
 
-    @Test
-    void shouldCreateComment() {
-        //given
-        CommentRequest commentRequest = CommentTestData.getCommentRequestForCreate();
-        Comment comment = CommentTestData.getCommentForCreate();
-        Comment createdComment = CommentTestData.getFillCommentForCreate();
-        CommentResponse commentResponse = CommentTestData.getCommentResponseForCreate();
+    @Nested
+    class Create {
+        @Test
+        void shouldCreateComment() {
+            //given
+            CommentRequest commentRequest = CommentTestData.getCommentRequestForCreate();
+            Comment comment = CommentTestData.getCommentForCreate();
+            Comment createdComment = CommentTestData.getFillCommentForCreate();
+            CommentResponse commentResponse = CommentTestData.getCommentResponseForCreate();
+            ResponseEntity<NewsResponse> newsResponse = CommentTestData.getNewsResponse();
 
-        when(commentMapper.requestToComment(commentRequest))
-                .thenReturn(comment);
-        when(commentRepository.save(comment))
-                .thenReturn(createdComment);
-        when(commentMapper.commentToResponse(createdComment))
-                .thenReturn(commentResponse);
+            when(newsFeignClient.getNewsById(commentRequest.newsId()))
+                    .thenReturn(newsResponse);
+            when(commentMapper.requestToComment(commentRequest))
+                    .thenReturn(comment);
+            when(commentRepository.save(comment))
+                    .thenReturn(createdComment);
+            when(commentMapper.commentToResponse(createdComment))
+                    .thenReturn(commentResponse);
 
-        //when
-        CommentResponse actualCommentResponse = commentService.createComment(commentRequest);
+            //when
+            CommentResponse actualCommentResponse = commentService.createComment(commentRequest);
 
-        //then
-        assertAll(
-                () -> assertNotNull(actualCommentResponse),
-                () -> assertNotNull(actualCommentResponse.id()),
-                () -> assertNotNull(actualCommentResponse.time()),
-                () -> assertEquals(commentResponse.newsId(), actualCommentResponse.newsId()),
-                () -> assertEquals(commentResponse.username(), actualCommentResponse.username()),
-                () -> assertEquals(commentResponse.text(), actualCommentResponse.text())
-        );
+            //then
+            assertAll(
+                    () -> assertNotNull(actualCommentResponse),
+                    () -> assertNotNull(actualCommentResponse.id()),
+                    () -> assertNotNull(actualCommentResponse.time()),
+                    () -> assertEquals(commentResponse.newsId(), actualCommentResponse.newsId()),
+                    () -> assertEquals(commentResponse.username(), actualCommentResponse.username()),
+                    () -> assertEquals(commentResponse.text(), actualCommentResponse.text())
+            );
 
-        verify(commentMapper, times(1)).requestToComment(commentRequest);
-        verify(commentRepository, times(1)).save(comment);
-        verify(commentMapper, times(1)).commentToResponse(createdComment);
+            verify(commentMapper, times(1)).requestToComment(commentRequest);
+            verify(commentRepository, times(1)).save(comment);
+            verify(commentMapper, times(1)).commentToResponse(createdComment);
+        }
+
+        @Test
+        void shouldNotCreateComment_whenNewsNotFound() {
+            //given
+            CommentRequest commentRequest = CommentTestData.getCommentRequestForCreate();
+            Comment comment = CommentTestData.getCommentForCreate();
+            Comment createdComment = CommentTestData.getFillCommentForCreate();
+
+            when(newsFeignClient.getNewsById(commentRequest.newsId()))
+                    .thenThrow(NewsNotFoundException.class);
+
+            //when
+            assertThrows(NewsNotFoundException.class,
+                    () -> commentService.createComment(commentRequest));
+
+            //then
+            verify(commentMapper, times(0)).requestToComment(commentRequest);
+            verify(commentRepository, times(0)).save(comment);
+            verify(commentMapper, times(0)).commentToResponse(createdComment);
+        }
+
+        @Test
+        void shouldNotCreateComment_whenFeignReturn500() {
+            //given
+            CommentRequest commentRequest = CommentTestData.getCommentRequestForCreate();
+            Comment comment = CommentTestData.getCommentForCreate();
+            Comment createdComment = CommentTestData.getFillCommentForCreate();
+
+            when(newsFeignClient.getNewsById(commentRequest.newsId()))
+                    .thenReturn(CommentTestData.getNewsResponseServerError());
+
+            //when
+            assertThrows(FeignServerErrorException.class,
+                    () -> commentService.createComment(commentRequest));
+
+            //then
+            verify(commentMapper, times(0)).requestToComment(commentRequest);
+            verify(commentRepository, times(0)).save(comment);
+            verify(commentMapper, times(0)).commentToResponse(createdComment);
+        }
+
+        @Test
+        void shouldNotCreateComment_whenFeignResponseBodyIsNull() {
+            //given
+            CommentRequest commentRequest = CommentTestData.getCommentRequestForCreate();
+            Comment comment = CommentTestData.getCommentForCreate();
+            Comment createdComment = CommentTestData.getFillCommentForCreate();
+
+            when(newsFeignClient.getNewsById(commentRequest.newsId()))
+                    .thenReturn(CommentTestData.getNewsResponseNotFound());
+
+            //when
+            assertThrows(NewsNotFoundException.class,
+                    () -> commentService.createComment(commentRequest));
+
+            //then
+            verify(commentMapper, times(0)).requestToComment(commentRequest);
+            verify(commentRepository, times(0)).save(comment);
+            verify(commentMapper, times(0)).commentToResponse(createdComment);
+        }
+
+
+        @Test
+        void shouldNotCreateComment_whenThrowFeignExceptionNotFound() {
+            //given
+            CommentRequest commentRequest = CommentTestData.getCommentRequestForCreate();
+            Comment comment = CommentTestData.getCommentForCreate();
+            Comment createdComment = CommentTestData.getFillCommentForCreate();
+
+            when(newsFeignClient.getNewsById(commentRequest.newsId()))
+                    .thenThrow(FeignException.NotFound.class);
+
+            //when
+            assertThrows(NewsNotFoundException.class,
+                    () -> commentService.createComment(commentRequest));
+
+            //then
+            verify(commentMapper, times(0)).requestToComment(commentRequest);
+            verify(commentRepository, times(0)).save(comment);
+            verify(commentMapper, times(0)).commentToResponse(createdComment);
+        }
+
+
+        @Test
+        void shouldNotCreateComment_whenThrowFeignException() {
+            //given
+            CommentRequest commentRequest = CommentTestData.getCommentRequestForCreate();
+            Comment comment = CommentTestData.getCommentForCreate();
+            Comment createdComment = CommentTestData.getFillCommentForCreate();
+
+            when(newsFeignClient.getNewsById(commentRequest.newsId()))
+                    .thenThrow(FeignException.class);
+
+            //when
+            assertThrows(FeignServerErrorException.class,
+                    () -> commentService.createComment(commentRequest));
+
+            //then
+            verify(commentMapper, times(0)).requestToComment(commentRequest);
+            verify(commentRepository, times(0)).save(comment);
+            verify(commentMapper, times(0)).commentToResponse(createdComment);
+        }
+
     }
+
 
     @Test
     void shouldGetAllComments() {
@@ -166,7 +286,10 @@ class CommentServiceImplTest {
             Optional<Comment> comment = CommentTestData.getCommentForUpdate();
             Comment updatedComment = CommentTestData.getUpdatedCommentForUpdate();
             CommentResponse commentResponse = CommentTestData.getCommentResponseForUpdate();
+            ResponseEntity<NewsResponse> newsResponse = CommentTestData.getNewsResponse();
 
+            when(newsFeignClient.getNewsById(commentRequest.newsId()))
+                    .thenReturn(newsResponse);
             when(commentRepository.findById(commentId))
                     .thenReturn(comment);
             when(commentMapper.updateFromRequest(commentId, commentRequest))
@@ -202,7 +325,10 @@ class CommentServiceImplTest {
             //given
             long commentId = CommentTestData.COMMENT_ID_FOR_UPDATE;
             CommentRequest commentRequest = CommentTestData.getCommentRequestForUpdate();
+            ResponseEntity<NewsResponse> newsResponse = CommentTestData.getNewsResponse();
 
+            when(newsFeignClient.getNewsById(commentRequest.newsId()))
+                    .thenReturn(newsResponse);
             when(commentRepository.findById(commentId))
                     .thenReturn(Optional.empty());
 
@@ -214,6 +340,24 @@ class CommentServiceImplTest {
             verify(commentRepository, times(1))
                     .findById(commentId);
         }
+
+        @Test
+        void shouldNotUpdateComment_whenNewsNotFound() {
+            //given
+            long commentId = CommentTestData.COMMENT_ID_FOR_UPDATE;
+            CommentRequest commentRequest = CommentTestData.getCommentRequestForUpdate();
+
+            when(newsFeignClient.getNewsById(commentRequest.newsId()))
+                    .thenThrow(NewsNotFoundException.class);
+
+            //when
+            assertThrows(NewsNotFoundException.class,
+                    () -> commentService.updateComment(commentId, commentRequest));
+
+            //then
+            verify(commentMapper, times(0)).requestToComment(commentRequest);
+        }
+
 
     }
 
@@ -311,4 +455,72 @@ class CommentServiceImplTest {
 
     }
 
+    @Test
+    void shouldDeleteCommentsByNewsId() {
+        //given
+        long newsId = CommentTestData.NEWS_ID;
+
+        //when, then
+        commentService.deleteCommentsByNewsId(newsId);
+        verify(commentRepository, times(1)).deleteAllByNewsId(newsId);
+    }
+
+
+    @Nested
+    class getCommentsByNewsId {
+
+        @Test
+        void shouldGetCommentByNewsId() {
+            //given
+            PageRequest pageable = PageRequest.of(
+                    CommentTestData.PAGE_NUMBER,
+                    CommentTestData.COMMENTS_PAGE_SIZE);
+            long newsId = CommentTestData.NEWS_ID;
+
+            Page<Comment> pageComments = CommentTestData.getPageableListComments();
+            List<CommentResponse> commentResponses = CommentTestData.getListCommentsResponse();
+
+            when(newsFeignClient.getNewsById(newsId))
+                    .thenReturn(CommentTestData.getNewsResponse());
+            when(commentRepository.findByNewsId(newsId, pageable))
+                    .thenReturn(pageComments);
+            when(commentMapper.commentToResponse(pageComments.getContent().get(0)))
+                    .thenReturn(commentResponses.get(0));
+            when(commentMapper.commentToResponse(pageComments.getContent().get(1)))
+                    .thenReturn(commentResponses.get(1));
+            when(commentMapper.commentToResponse(pageComments.getContent().get(2)))
+                    .thenReturn(commentResponses.get(2));
+            when(commentMapper.commentToResponse(pageComments.getContent().get(3)))
+                    .thenReturn(commentResponses.get(3));
+
+            //when
+            List<CommentResponse> actualComments = commentService
+                    .getCommentsByNewsId(newsId, CommentTestData.PAGE_NUMBER);
+
+            //then
+            assertEquals(commentResponses.size(), actualComments.size());
+
+            verify(commentRepository, times(1)).findByNewsId(newsId, pageable);
+            verify(commentMapper, times(1)).commentToResponse(pageComments.getContent().get(0));
+            verify(commentMapper, times(1)).commentToResponse(pageComments.getContent().get(1));
+            verify(commentMapper, times(1)).commentToResponse(pageComments.getContent().get(2));
+            verify(commentMapper, times(1)).commentToResponse(pageComments.getContent().get(3));
+        }
+
+        @Test
+        void shouldNotGetAllCommentByNewsId_whenNewsIdIsNotExists() {
+            //given
+            Long newsId = CommentTestData.NEWS_ID;
+
+            when(newsFeignClient.getNewsById(newsId))
+                    .thenReturn(new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+
+            //when, then
+            assertThrows(NewsNotFoundException.class, () ->
+                    commentService.getCommentsByNewsId(newsId, CommentTestData.PAGE_NUMBER));
+
+            verify(newsFeignClient, times(1))
+                    .getNewsById(newsId);
+        }
+    }
 }

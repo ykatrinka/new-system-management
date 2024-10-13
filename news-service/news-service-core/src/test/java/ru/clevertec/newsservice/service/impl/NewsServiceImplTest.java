@@ -1,5 +1,6 @@
 package ru.clevertec.newsservice.service.impl;
 
+import feign.FeignException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,10 +10,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import ru.clevertec.newsservice.dto.request.NewsRequest;
+import ru.clevertec.newsservice.dto.response.CommentResponse;
+import ru.clevertec.newsservice.dto.response.NewsCommentsResponse;
 import ru.clevertec.newsservice.dto.response.NewsResponse;
 import ru.clevertec.newsservice.entity.News;
+import ru.clevertec.newsservice.exception.CommentNotFoundException;
 import ru.clevertec.newsservice.exception.NewsNotFoundException;
 import ru.clevertec.newsservice.exception.NoSuchSearchFieldException;
+import ru.clevertec.newsservice.exception.NotMatchNewsCommentException;
+import ru.clevertec.newsservice.feignclient.CommentsFeignClient;
 import ru.clevertec.newsservice.mapper.NewsMapper;
 import ru.clevertec.newsservice.repository.NewsRepository;
 import ru.clevertec.newsservice.util.NewsTestData;
@@ -37,6 +43,9 @@ class NewsServiceImplTest {
 
     @Mock
     private NewsMapper newsMapper;
+
+    @Mock
+    private CommentsFeignClient commentsFeignClient;
 
     @InjectMocks
     private NewsServiceImpl newsService;
@@ -305,5 +314,132 @@ class NewsServiceImplTest {
                             NewsTestData.SEARCH_NOT_VALID_FIELDS, 1));
         }
 
+    }
+
+    @Nested
+    class getWithCommentsById {
+
+        @Test
+        void shouldGetNewsByIdWithComments() {
+            //given
+            int pageNumber = NewsTestData.PAGE_NUMBER_COMMENT;
+            Long newsId = NewsTestData.NEWS_ID_FOR_GET;
+            News news = NewsTestData.getFillNewsForGetById();
+            List<CommentResponse> commentsResponse = NewsTestData.getListCommentsResponse();
+            NewsCommentsResponse newsResponse = NewsTestData.getFillNewsResponseWithComments();
+
+            when(newsRepository.findById(newsId)).thenReturn(Optional.of(news));
+            when(commentsFeignClient.getCommentsByNewsId(newsId, pageNumber))
+                    .thenReturn(commentsResponse);
+            when(newsMapper.newsToCommentsResponse(news, commentsResponse))
+                    .thenReturn(newsResponse);
+
+            //when
+            NewsCommentsResponse actualNews = newsService.getNewsByIdWithComments(newsId, pageNumber);
+
+            //then
+            assertAll(
+                    () -> assertNotNull(actualNews),
+                    () -> assertEquals(newsId, actualNews.id()),
+                    () -> assertEquals(NewsTestData.CREATED_DATE, actualNews.time()),
+                    () -> assertEquals(NewsTestData.NEWS_TITLE, actualNews.title()),
+                    () -> assertEquals(NewsTestData.NEWS_CONTENT, actualNews.text()),
+                    () -> assertEquals(commentsResponse.size(), actualNews.comments().size())
+            );
+
+            verify(newsRepository, times(1))
+                    .findById(newsId);
+            verify(commentsFeignClient, times(1))
+                    .getCommentsByNewsId(newsId, pageNumber);
+            verify(newsMapper, times(1))
+                    .newsToCommentsResponse(news, commentsResponse);
+        }
+
+        @Test
+        void shouldNotGetNewsWithCommentById_whenNewsNotFound() {
+            //given
+            int pageNumber = NewsTestData.PAGE_NUMBER_COMMENT;
+            Long newsId = NewsTestData.NEWS_ID_FOR_GET;
+
+            when(newsRepository.findById(newsId))
+                    .thenThrow(NewsNotFoundException.getById(newsId));
+
+            //when, then
+            assertThrows(NewsNotFoundException.class,
+                    () -> newsService.getNewsByIdWithComments(newsId, pageNumber));
+
+            verify(newsRepository, times(1))
+                    .findById(newsId);
+            verify(commentsFeignClient, times(0))
+                    .getCommentsByNewsId(newsId, pageNumber);
+            verify(newsMapper, times(0))
+                    .newsToResponse(any());
+        }
+    }
+
+
+    @Nested
+    class getCommentById {
+
+        @Test
+        void shouldGetCommentById() {
+            //given
+            Long newsId = NewsTestData.NEWS_ID_FOR_COMMENTS;
+            Long commentId = NewsTestData.COMMENTS_ID_FOR_GET;
+            CommentResponse comment = NewsTestData.getCommentResponseForGetById();
+
+            when(commentsFeignClient.getCommentById(commentId))
+                    .thenReturn(comment);
+
+            //when
+            CommentResponse actualComment = newsService.getNewsCommentById(newsId, commentId);
+
+            //then
+            assertAll(
+                    () -> assertNotNull(actualComment),
+                    () -> assertEquals(commentId, actualComment.id()),
+                    () -> assertEquals(comment.time(), actualComment.time()),
+                    () -> assertEquals(comment.username(), actualComment.username()),
+                    () -> assertEquals(comment.newsId(), actualComment.newsId()),
+                    () -> assertEquals(comment.text(), actualComment.text())
+            );
+
+            verify(commentsFeignClient, times(1))
+                    .getCommentById(commentId);
+        }
+
+        @Test
+        void shouldNotGetCommentById_whenCommentByIdNotFound() {
+            //given
+            Long newsId = NewsTestData.NEWS_ID_FOR_COMMENTS;
+            Long commentId = NewsTestData.COMMENTS_ID_FOR_GET;
+
+            when(commentsFeignClient.getCommentById(commentId))
+                    .thenThrow(FeignException.class);
+
+            //when, then
+            assertThrows(CommentNotFoundException.class,
+                    () -> newsService.getNewsCommentById(newsId, commentId));
+
+            verify(commentsFeignClient, times(1))
+                    .getCommentById(commentId);
+        }
+
+        @Test
+        void shouldNotGetCommentById_whenCommentByNoMachWithNewsId() {
+            //given
+            Long newsId = NewsTestData.NEWS_ID_FOR_COMMENTS;
+            Long commentId = NewsTestData.COMMENTS_ID_FOR_GET;
+            CommentResponse comment = NewsTestData.getCommentResponseWithOtherNewsId();
+
+            when(commentsFeignClient.getCommentById(commentId))
+                    .thenReturn(comment);
+
+            //when, then
+            assertThrows(NotMatchNewsCommentException.class,
+                    () -> newsService.getNewsCommentById(newsId, commentId));
+
+            verify(commentsFeignClient, times(1)).getCommentById(commentId);
+        }
     }
 }

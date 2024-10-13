@@ -12,9 +12,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.clevertec.newsservice.dto.request.NewsRequest;
+import ru.clevertec.newsservice.dto.response.CommentResponse;
+import ru.clevertec.newsservice.dto.response.NewsCommentsResponse;
 import ru.clevertec.newsservice.dto.response.NewsResponse;
+import ru.clevertec.newsservice.exception.CommentNotFoundException;
 import ru.clevertec.newsservice.exception.NewsNotFoundException;
 import ru.clevertec.newsservice.exception.NoSuchSearchFieldException;
+import ru.clevertec.newsservice.exception.NotMatchNewsCommentException;
 import ru.clevertec.newsservice.service.NewsService;
 import ru.clevertec.newsservice.util.NewsTestData;
 
@@ -207,4 +211,123 @@ class NewsControllerTest {
 
         }
     }
+
+
+    @Nested
+    class newsByIdWithComments {
+
+        @Test
+        void shouldGetNewsByIdWithComments() throws Exception {
+            //given
+            Long newsId = NewsTestData.NEWS_ID;
+            NewsCommentsResponse newsWithComments = NewsTestData.getFillNewsResponseWithComments();
+
+            when(newsService.getNewsByIdWithComments(newsId, 0))
+                    .thenReturn(newsWithComments);
+
+            //when, then
+            mockMvc.perform(get("/news/{newsId}/comments", newsId))
+                    .andExpect(status().isOk());
+
+            verify(newsService, times(0))
+                    .getNewsByIdWithComments(newsId, 0);
+        }
+
+        @Test
+        void shouldNotGetNewsByIdWithComments_whenNewsIdNotFound() throws Exception {
+            //given
+            Long newsId = NewsTestData.NEWS_ID;
+
+            when(newsService.getNewsByIdWithComments(newsId, 1))
+                    .thenThrow(NewsNotFoundException.class);
+
+            //when, then
+            mockMvc.perform(get("/news/{newsId}/comments", newsId))
+                    .andExpect(status().isNotFound());
+
+            verify(newsService, times(1))
+                    .getNewsByIdWithComments(newsId, 1);
+        }
+
+    }
+
+    @Nested
+    class commentById {
+
+        @Test
+        void shouldGetCommentById() throws Exception {
+            //given
+            Long newsId = NewsTestData.NEWS_ID;
+            Long commentId = NewsTestData.COMMENT_ID;
+            CommentResponse commentResponse = NewsTestData.getCommentResponse();
+
+            when(newsService.getNewsCommentById(newsId, commentId))
+                    .thenReturn(commentResponse);
+
+            //when, then
+            mockMvc.perform(get("/news/{newsId}/comments/{commentId}", newsId, commentId))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(commentResponse.id()))
+                    .andExpect(jsonPath("$.newsId").value(commentResponse.newsId()))
+                    .andExpect(jsonPath("$.username").value(commentResponse.username()))
+                    .andExpect(jsonPath("$.text").value(commentResponse.text()))
+            ;
+
+            verify(newsService, times(1))
+                    .getNewsCommentById(newsId, commentId);
+        }
+
+        @Test
+        void shouldNotGetCommentById_whenNewsIdNotFound() throws Exception {
+            //given
+            Long newsId = NewsTestData.NEWS_ID;
+            Long commentId = NewsTestData.COMMENT_ID;
+
+            when(newsService.getNewsCommentById(newsId, commentId))
+                    .thenThrow(NewsNotFoundException.class);
+
+            //when, then
+            mockMvc.perform(get("/news/{newsId}/comments/{commentId}", newsId, commentId))
+                    .andExpect(status().isNotFound());
+
+            verify(newsService, times(1))
+                    .getNewsCommentById(newsId, commentId);
+        }
+
+        @Test
+        void shouldNotGetCommentById_whenNewsIdNotMatchCommentId() throws Exception {
+            //given
+            Long newsId = NewsTestData.NEWS_ID;
+            Long commentId = NewsTestData.COMMENT_ID;
+
+            when(newsService.getNewsCommentById(newsId, commentId))
+                    .thenThrow(NotMatchNewsCommentException.class);
+
+            //when, then
+            mockMvc.perform(get("/news/{newsId}/comments/{commentId}", newsId, commentId))
+                    .andExpect(status().isBadRequest());
+
+            verify(newsService, times(1))
+                    .getNewsCommentById(newsId, commentId);
+        }
+
+        @Test
+        void shouldNotGetCommentById_whenCommentIdNotFound() throws Exception {
+            //given
+            Long newsId = NewsTestData.NEWS_ID;
+            Long commentId = NewsTestData.COMMENT_ID;
+
+            when(newsService.getNewsCommentById(newsId, commentId))
+                    .thenThrow(CommentNotFoundException.class);
+
+            //when, then
+            mockMvc.perform(get("/news/{newsId}/comments/{commentId}", newsId, commentId))
+                    .andExpect(status().isNotFound());
+
+            verify(newsService, times(1))
+                    .getNewsCommentById(newsId, commentId);
+        }
+
+    }
+
 }

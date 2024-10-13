@@ -235,4 +235,45 @@ class CommentControllerTest {
         }
     }
 
+
+    @Nested
+    class getCommentsByNewsId {
+
+        @Test
+        void shouldGetCommentsByNewsId() throws Exception {
+            //given
+            long newsId = CommentTestData.NEWS_ID;
+            List<CommentResponse> comments = CommentTestData.getListWithTwoCommentResponse();
+            when(commentService.getCommentsByNewsId(newsId, 0))
+                    .thenReturn(comments);
+
+            //when, then
+            mockMvc.perform(get("/comments/{newsId}/comments", newsId))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(2));
+
+            verify(commentService, times(0))
+                    .getCommentsByNewsId(newsId, 1);
+
+        }
+
+        @Test
+        void shouldGetEmptyListCommentsByNewsId() throws Exception {
+            //given
+            long newsId = CommentTestData.NEWS_ID;
+            List<CommentResponse> comments = List.of();
+            when(commentService.getCommentsByNewsId(newsId, 0))
+                    .thenReturn(comments);
+
+            //when, then
+            mockMvc.perform(get("/comments/{newsId}/comments", newsId))
+                    .andExpect(status().isNoContent())
+                    .andExpect(jsonPath("$.length()").value(0));
+
+            verify(commentService, times(0))
+                    .getCommentsByNewsId(newsId, 1);
+
+        }
+    }
+
 }

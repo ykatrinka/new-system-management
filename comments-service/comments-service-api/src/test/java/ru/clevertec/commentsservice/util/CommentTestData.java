@@ -2,6 +2,7 @@ package ru.clevertec.commentsservice.util;
 
 import ru.clevertec.commentsservice.dto.request.CommentRequest;
 import ru.clevertec.commentsservice.dto.response.CommentResponse;
+import ru.clevertec.commentsservice.dto.response.NewsResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,13 +17,15 @@ public class CommentTestData {
     public static final long COMMENT_ID = 1L;
 
 
+    //integration
     public static final long COMMENT_ID_NEW = 5L;
     public static final long COMMENT_NEWS_ID = 1L;
     public static final String COMMENT_TEXT = "Comment 1";
     public static final long COMMENT_ID_NOT_FOUND = 7L;
     public static final long COMMENT_ID_UPD = 2L;
+    public static final long NEWS_ID_NO_CONTENT = 3L;
+    public static final long NEWS_ID_NOT_FOUND = 5L;
 
-    //integration
     //search
     public static final int SEARCH_LIMIT = 15;
     public static final String SEARCH_VALUE = "Sarah";
@@ -67,5 +70,11 @@ public class CommentTestData {
                         .text(TEXT)
                         .build()
         );
+    }
+
+    public static NewsResponse getNewsResponse() {
+        return NewsResponse.builder()
+                .id(NEWS_ID)
+                .build();
     }
 }

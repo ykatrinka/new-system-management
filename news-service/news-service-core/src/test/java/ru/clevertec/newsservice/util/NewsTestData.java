@@ -3,6 +3,8 @@ package ru.clevertec.newsservice.util;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import ru.clevertec.newsservice.dto.request.NewsRequest;
+import ru.clevertec.newsservice.dto.response.CommentResponse;
+import ru.clevertec.newsservice.dto.response.NewsCommentsResponse;
 import ru.clevertec.newsservice.dto.response.NewsResponse;
 import ru.clevertec.newsservice.entity.News;
 
@@ -27,6 +29,14 @@ public class NewsTestData {
     public static final LocalDateTime UPDATED_DATE = LocalDateTime
             .of(2024, 8, 15, 0, 0, 0);
     public static final String NEWS_CONTENT_UPDATE = "Updated news content for News Title";
+
+    public static final long COMMENTS_ID_FOR_GET = 1L;
+    public static final String USERNAME = "Patrik";
+    public static final long NEWS_ID_FOR_COMMENTS = 1L;
+    public static final String TEXT_COMMENT = "This is a comment";
+
+    public static final int PAGE_NUMBER_COMMENT = 1;
+    public static final long NEWS_ID_OTHER_COMMENTS = 2L;
 
     public static final String TITLE_SEARCH = "News Title";
     public static final String TEXT_SEARCH = "News content for News Title";
@@ -203,6 +213,19 @@ public class NewsTestData {
                 .build();
     }
 
+
+    public static List<CommentResponse> getCommentResponsesForMapper() {
+        return List.of(
+                CommentResponse.builder()
+                        .id(COMMENTS_ID_FOR_GET)
+                        .time(CREATED_DATE)
+                        .newsId(NEWS_ID_FOR_COMMENTS)
+                        .username(USERNAME)
+                        .text(TEXT_COMMENT)
+                        .build()
+        );
+    }
+
     //  full text search
     public static List<News> getListNewsSearch() {
         return List.of(
@@ -236,6 +259,72 @@ public class NewsTestData {
                         .text(TEXT_SEARCH)
                         .build()
         );
+    }
+
+    public static List<CommentResponse> getListCommentsResponse() {
+        return List.of(
+                CommentResponse.builder()
+                        .id(1L)
+                        .username(USERNAME)
+                        .newsId(NEWS_ID_FOR_COMMENTS)
+                        .text(TEXT_COMMENT)
+                        .time(CREATED_DATE)
+                        .build(),
+                CommentResponse.builder()
+                        .id(2L)
+                        .username(USERNAME)
+                        .newsId(NEWS_ID_FOR_COMMENTS)
+                        .text(TEXT_COMMENT)
+                        .time(CREATED_DATE)
+                        .build(),
+                CommentResponse.builder()
+                        .id(3L)
+                        .username(USERNAME)
+                        .newsId(NEWS_ID_FOR_COMMENTS)
+                        .text(TEXT_COMMENT)
+                        .time(CREATED_DATE)
+                        .build(),
+                CommentResponse.builder()
+                        .id(4L)
+                        .username(USERNAME)
+                        .newsId(NEWS_ID_FOR_COMMENTS)
+                        .text(TEXT_COMMENT)
+                        .time(CREATED_DATE)
+                        .build()
+        );
+    }
+
+
+    public static NewsCommentsResponse getFillNewsResponseWithComments() {
+        return NewsCommentsResponse.builder()
+                .id(NEWS_ID_FOR_COMMENTS)
+                .time(CREATED_DATE)
+                .title(NEWS_TITLE)
+                .text(NEWS_CONTENT)
+                .comments(
+                        getListCommentsResponse()
+                )
+                .build();
+    }
+
+    public static CommentResponse getCommentResponseForGetById() {
+        return CommentResponse.builder()
+                .id(COMMENTS_ID_FOR_GET)
+                .username(USERNAME)
+                .newsId(NEWS_ID_FOR_COMMENTS)
+                .text(TEXT_COMMENT)
+                .time(CREATED_DATE)
+                .build();
+    }
+
+    public static CommentResponse getCommentResponseWithOtherNewsId() {
+        return CommentResponse.builder()
+                .id(COMMENTS_ID_FOR_GET)
+                .username(USERNAME)
+                .newsId(NEWS_ID_OTHER_COMMENTS)
+                .text(TEXT_COMMENT)
+                .time(CREATED_DATE)
+                .build();
     }
 
 }

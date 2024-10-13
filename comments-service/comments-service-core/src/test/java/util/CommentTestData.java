@@ -2,8 +2,11 @@ package util;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import ru.clevertec.commentsservice.dto.request.CommentRequest;
 import ru.clevertec.commentsservice.dto.response.CommentResponse;
+import ru.clevertec.commentsservice.dto.response.NewsResponse;
 import ru.clevertec.commentsservice.entity.Comment;
 
 import java.time.LocalDateTime;
@@ -263,5 +266,21 @@ public class CommentTestData {
                         .time(CREATED_DATE)
                         .build()
         );
+    }
+
+    public static ResponseEntity<NewsResponse> getNewsResponse() {
+        return new ResponseEntity<>(
+                NewsResponse.builder()
+                        .id(NEWS_ID)
+                        .build(),
+                HttpStatus.OK);
+    }
+
+    public static ResponseEntity<NewsResponse> getNewsResponseServerError() {
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    public static ResponseEntity<NewsResponse> getNewsResponseNotFound() {
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }

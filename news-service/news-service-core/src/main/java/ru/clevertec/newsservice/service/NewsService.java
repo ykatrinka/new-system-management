@@ -1,7 +1,10 @@
 package ru.clevertec.newsservice.service;
 
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.newsservice.dto.request.NewsRequest;
+import ru.clevertec.newsservice.dto.response.CommentResponse;
+import ru.clevertec.newsservice.dto.response.NewsCommentsResponse;
 import ru.clevertec.newsservice.dto.response.NewsResponse;
 
 import java.util.List;
@@ -62,6 +65,28 @@ public interface NewsService {
      * @param text   Текст для поиска.
      * @param limit  Количество элементов.
      * @param fields Перечень полей для поиска.
+     * @return Список новостей.
      */
     List<NewsResponse> searchNews(String text, List<String> fields, int limit);
+
+    /**
+     * Получает новость со списком комментариев.
+     * Поиск по идентификатору новости (с учетом пагинации).
+     *
+     * @param newsId     идентификатор новости.
+     * @param pageNumber Номер страницы.
+     * @return Список комментариев по указанной странице.
+     */
+    @Transactional(readOnly = true)
+    NewsCommentsResponse getNewsByIdWithComments(Long newsId, int pageNumber);
+
+    /**
+     * Получает комментарий по идентификатору.
+     *
+     * @param newsId    идентификатор новости.
+     * @param commentId идентификатор комментария.
+     * @return Комментарий.
+     */
+    @Transactional(readOnly = true)
+    CommentResponse getNewsCommentById(Long newsId, Long commentId);
 }

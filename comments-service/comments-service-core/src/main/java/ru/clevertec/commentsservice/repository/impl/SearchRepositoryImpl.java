@@ -41,6 +41,12 @@ public class SearchRepositoryImpl<T, K extends Serializable>
         this.entityManager = entityManager;
     }
 
+    /**
+     * Конструктор.
+     *
+     * @param entityInformation сущность
+     * @param entityManager     Entity Manager.
+     */
     public SearchRepositoryImpl(
             JpaEntityInformation<T, K> entityInformation, EntityManager entityManager) {
         super(entityInformation, entityManager);

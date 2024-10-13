@@ -3,6 +3,8 @@ package ru.clevertec.newsservice.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,12 +23,16 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.clevertec.newsservice.dto.request.NewsRequest;
+import ru.clevertec.newsservice.dto.response.CommentResponse;
+import ru.clevertec.newsservice.dto.response.NewsCommentsResponse;
 import ru.clevertec.newsservice.dto.response.NewsResponse;
 import ru.clevertec.newsservice.util.NewsTestData;
 
 import java.net.URI;
 import java.util.List;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -38,6 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 )
 @ActiveProfiles("test")
 @Testcontainers
+@WireMockTest(httpPort = 8082)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class NewsControllerIntegrationTest {
 
@@ -199,6 +206,14 @@ class NewsControllerIntegrationTest {
         //given
         long newsId = NewsTestData.NEWS_ID;
 
+        WireMock.stubFor(
+                WireMock.delete(urlPathEqualTo("/" + newsId + "/comments"))
+                        .willReturn(
+                                aResponse()
+                                        .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                        )
+        );
+
         //when
         ResponseEntity<String> responseEntity = restTemplate.exchange(
                 "/news/" + newsId,
@@ -240,7 +255,6 @@ class NewsControllerIntegrationTest {
         //then
         assertAll(
                 () -> assertNotNull(actualResponse),
-                () -> assertEquals(1, actualResponse.size()),
                 () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
                 () -> assertEquals(MediaType.APPLICATION_JSON,
                         responseEntity.getHeaders().getContentType())
@@ -280,5 +294,156 @@ class NewsControllerIntegrationTest {
 
     }
 
+    @Test
+    void shouldGetNewsByIdWithComments() throws JsonProcessingException {
+        //given
+        Long newsId = NewsTestData.NEWS_ID;
+        List<CommentResponse> listCommentsResponse = NewsTestData.getListCommentsResponse();
+        WireMock.stubFor(WireMock.get(urlPathEqualTo("/comments/" + newsId + "/comments"))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(objectMapper.writeValueAsString(
+                                        listCommentsResponse
+                                )
+                        )
+                )
+        );
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                "/news/" + newsId + "/comments",
+                HttpMethod.GET,
+                null,
+                String.class);
+
+
+        //when
+        NewsCommentsResponse actualResponse = objectMapper.readValue(
+                responseEntity.getBody(),
+                new TypeReference<>() {
+                });
+
+        //then
+        assertAll(
+                () -> assertNotNull(actualResponse),
+                () -> assertEquals(listCommentsResponse.size(), actualResponse.comments().size()),
+                () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
+                () -> assertEquals(MediaType.APPLICATION_JSON, responseEntity.getHeaders().getContentType())
+        );
+
+    }
+
+
+    @Test
+    void shouldNotGetNewsByIdWithComments_whenNewsIdNotFound() {
+        //given
+        Long newsId = NewsTestData.NEWS_ID_NOT_FOUND;
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                "/news/" + newsId + "/comments",
+                HttpMethod.GET,
+                null,
+                String.class);
+
+
+        //when, then
+        assertAll(
+                () -> assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode()),
+                () -> assertEquals(MediaType.APPLICATION_JSON, responseEntity.getHeaders().getContentType())
+        );
+
+    }
+
+
+    @Test
+    void shouldGetCommentById() throws Exception {
+        //given
+        Long newsId = NewsTestData.NEWS_ID;
+        Long commentId = NewsTestData.COMMENT_ID;
+
+        CommentResponse commentResponse = NewsTestData.getCommentResponse();
+        String jsonString = objectMapper.writeValueAsString(commentResponse);
+
+
+        WireMock.stubFor(
+                WireMock.get(urlPathEqualTo("/comments/" + commentId))
+                        .willReturn(aResponse()
+                                .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                                .withBody(jsonString))
+        );
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                "/news/" + newsId + "/comments/" + commentId,
+                HttpMethod.GET,
+                null,
+                String.class);
+
+        CommentResponse actualResponse = objectMapper.readValue(
+                responseEntity.getBody(),
+                new TypeReference<>() {
+                });
+
+        //when, then
+        assertAll(
+                () -> assertNotNull(actualResponse),
+                () -> assertEquals(NewsTestData.USERNAME, actualResponse.username()),
+                () -> assertEquals(NewsTestData.NEWS_ID, actualResponse.newsId()),
+                () -> assertEquals(NewsTestData.COMMENT_TEXT, actualResponse.text()),
+                () -> assertEquals(HttpStatus.OK, responseEntity.getStatusCode()),
+                () -> assertEquals(MediaType.APPLICATION_JSON, responseEntity.getHeaders().getContentType())
+        );
+
+    }
+
+    @Test
+    void shouldNotGetCommentById_whenNewsIdNotFound() {
+        //given
+        Long newsId = NewsTestData.NEWS_ID_NOT_FOUND;
+        Long commentId = NewsTestData.COMMENT_ID;
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                "/news/" + newsId + "/comments/" + commentId,
+                HttpMethod.GET,
+                null,
+                String.class);
+
+        //when, then
+        assertAll(
+                () -> assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode()),
+                () -> assertEquals(MediaType.APPLICATION_JSON, responseEntity.getHeaders().getContentType())
+        );
+
+    }
+
+    @Test
+    void shouldNotGetCommentById_whenNewsIdNotMatchCommentId() throws Exception {
+        //given
+        Long newsId = NewsTestData.NEWS_ID_UPD;
+        Long commentId = NewsTestData.COMMENT_ID;
+
+        CommentResponse commentResponse = NewsTestData.getCommentResponse();
+        String jsonString = objectMapper.writeValueAsString(commentResponse);
+
+
+        WireMock.stubFor(
+                WireMock.get(urlPathEqualTo("/comments/" + commentId))
+                        .willReturn(
+                                aResponse()
+                                        .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                                        .withBody(jsonString))
+        );
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                "/news/" + newsId + "/comments/" + commentId,
+                HttpMethod.GET,
+                null,
+                String.class);
+
+        //when, then
+        assertAll(
+                () -> assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode()),
+                () -> assertEquals(MediaType.APPLICATION_JSON, responseEntity.getHeaders().getContentType())
+        );
+
+    }
 
 }

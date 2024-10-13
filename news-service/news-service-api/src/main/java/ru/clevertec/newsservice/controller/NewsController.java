@@ -15,10 +15,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.newsservice.dto.request.NewsRequest;
+import ru.clevertec.newsservice.dto.response.CommentResponse;
+import ru.clevertec.newsservice.dto.response.NewsCommentsResponse;
 import ru.clevertec.newsservice.dto.response.NewsResponse;
 import ru.clevertec.newsservice.service.NewsService;
 
 import java.util.List;
+
+import static ru.clevertec.newsservice.util.BaseURLData.BASE_URL_NEWS;
+import static ru.clevertec.newsservice.util.BaseURLData.COMMENT_ID_PARAM;
+import static ru.clevertec.newsservice.util.BaseURLData.FIRST_PAGE;
+import static ru.clevertec.newsservice.util.BaseURLData.NEWS_ID_PARAM;
+import static ru.clevertec.newsservice.util.BaseURLData.PAGE_NUMBER_PARAM;
+import static ru.clevertec.newsservice.util.BaseURLData.SEARCH_FIELD_PARAM;
+import static ru.clevertec.newsservice.util.BaseURLData.SEARCH_LIMIT;
+import static ru.clevertec.newsservice.util.BaseURLData.SEARCH_LIMIT_PARAM;
+import static ru.clevertec.newsservice.util.BaseURLData.SEARCH_VALUE_PARAM;
+import static ru.clevertec.newsservice.util.BaseURLData.URL_NEWS_ID;
+import static ru.clevertec.newsservice.util.BaseURLData.URL_NEWS_ID_COMMENTS;
+import static ru.clevertec.newsservice.util.BaseURLData.URL_NEWS_ID_COMMENTS_COMMENTS_ID;
+import static ru.clevertec.newsservice.util.BaseURLData.URL_SEARCH;
 
 /**
  * @author Katerina
@@ -28,7 +44,7 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/news")
+@RequestMapping(BASE_URL_NEWS)
 public class NewsController {
 
     /**
@@ -60,8 +76,8 @@ public class NewsController {
     @GetMapping
     public ResponseEntity<List<NewsResponse>> getAllNews(
             @RequestParam(
-                    name = "pageNumber",
-                    defaultValue = "1",
+                    name = PAGE_NUMBER_PARAM,
+                    defaultValue = FIRST_PAGE,
                     required = false) int pageNumber) {
         List<NewsResponse> news = newsService.getAllNews(pageNumber - 1);
         return new ResponseEntity<>(news, news.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
@@ -74,8 +90,8 @@ public class NewsController {
      * @return NewsResponse
      * Возвращает данные по новости.
      */
-    @GetMapping(value = "/{newsId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<NewsResponse> getNewsById(@PathVariable("newsId") Long newsId) {
+    @GetMapping(value = URL_NEWS_ID, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<NewsResponse> getNewsById(@PathVariable(NEWS_ID_PARAM) Long newsId) {
         NewsResponse news = newsService.getNewsById(newsId);
         return new ResponseEntity<>(news, HttpStatus.OK);
     }
@@ -89,7 +105,7 @@ public class NewsController {
      * Обновленная новость.
      */
     @PutMapping("/{newsId}")
-    public ResponseEntity<NewsResponse> updateNews(@PathVariable("newsId") Long newsId,
+    public ResponseEntity<NewsResponse> updateNews(@PathVariable(NEWS_ID_PARAM) Long newsId,
                                                    @Valid @RequestBody NewsRequest newsRequest) {
         NewsResponse news = newsService.updateNews(newsId, newsRequest);
         return new ResponseEntity<>(news, HttpStatus.OK);
@@ -100,8 +116,8 @@ public class NewsController {
      *
      * @param newsId Идентификатор новости для удаления.
      */
-    @DeleteMapping("/{newsId}")
-    public void deleteNews(@PathVariable("newsId") Long newsId) {
+    @DeleteMapping(URL_NEWS_ID)
+    public void deleteNews(@PathVariable(NEWS_ID_PARAM) Long newsId) {
         newsService.deleteNews(newsId);
     }
 
@@ -113,16 +129,52 @@ public class NewsController {
      * @param limit  Необязательный параметр.
      *               Количество записей (по умолчанию 15).
      * @param fields Перечень полей для поиска.
+     * @return Список новостей.
      */
-    @GetMapping("/search")
+    @GetMapping(URL_SEARCH)
     public ResponseEntity<List<NewsResponse>> searchNews(
-            @RequestParam(name = "text") String text,
+            @RequestParam(name = SEARCH_VALUE_PARAM) String text,
             @RequestParam(
-                    name = "limit",
-                    defaultValue = "15",
+                    name = SEARCH_LIMIT_PARAM,
+                    defaultValue = SEARCH_LIMIT,
                     required = false) int limit,
-            @RequestParam(name = "fields") List<String> fields
+            @RequestParam(name = SEARCH_FIELD_PARAM) List<String> fields
     ) {
         return new ResponseEntity<>(newsService.searchNews(text, fields, limit), HttpStatus.OK);
+    }
+
+    /**
+     * Endpoint для получения новости со списком комментариев.
+     * Поиск по идентификатору новости (с учетом пагинации).
+     *
+     * @param newsId     идентификатор новости.
+     * @param pageNumber Номер страницы.
+     * @return Список комментариев по указанной странице.
+     */
+    @GetMapping(value = URL_NEWS_ID_COMMENTS, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<NewsCommentsResponse> getNewsById(
+            @PathVariable(NEWS_ID_PARAM) Long newsId,
+            @RequestParam(
+                    name = PAGE_NUMBER_PARAM,
+                    defaultValue = FIRST_PAGE,
+                    required = false) int pageNumber) {
+
+        NewsCommentsResponse news = newsService.getNewsByIdWithComments(newsId, pageNumber);
+        return new ResponseEntity<>(news, HttpStatus.OK);
+    }
+
+    /**
+     * Получает комментарий по идентификатору.
+     *
+     * @param newsId    идентификатор новости.
+     * @param commentId идентификатор комментария.
+     * @return Комментарий.
+     */
+    @GetMapping(value = URL_NEWS_ID_COMMENTS_COMMENTS_ID, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CommentResponse> getCommentById(
+            @PathVariable(NEWS_ID_PARAM) Long newsId,
+            @PathVariable(COMMENT_ID_PARAM) Long commentId) {
+        CommentResponse news = newsService.getNewsCommentById(newsId, commentId);
+        return new ResponseEntity<>(news, HttpStatus.OK);
     }
 }

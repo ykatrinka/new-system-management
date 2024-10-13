@@ -1,5 +1,6 @@
 package ru.clevertec.newsservice.service.impl;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.springframework.data.domain.Page;
@@ -7,10 +8,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.newsservice.dto.request.NewsRequest;
+import ru.clevertec.newsservice.dto.response.CommentResponse;
+import ru.clevertec.newsservice.dto.response.NewsCommentsResponse;
 import ru.clevertec.newsservice.dto.response.NewsResponse;
 import ru.clevertec.newsservice.entity.News;
+import ru.clevertec.newsservice.exception.CommentNotFoundException;
 import ru.clevertec.newsservice.exception.NewsNotFoundException;
 import ru.clevertec.newsservice.exception.NoSuchSearchFieldException;
+import ru.clevertec.newsservice.exception.NotMatchNewsCommentException;
+import ru.clevertec.newsservice.feignclient.CommentsFeignClient;
 import ru.clevertec.newsservice.mapper.NewsMapper;
 import ru.clevertec.newsservice.repository.NewsRepository;
 import ru.clevertec.newsservice.service.NewsService;
@@ -31,6 +37,7 @@ public class NewsServiceImpl implements NewsService {
 
     private final NewsRepository newsRepository;
     private final NewsMapper newsMapper;
+    private final CommentsFeignClient commentsClient;
 
     /**
      * Метод для добавления новой новости в базу данных.
@@ -102,11 +109,13 @@ public class NewsServiceImpl implements NewsService {
 
     /**
      * Метод для удаления новости по id из базы данных.
+     * Комментарии удаляются каскадно.
      *
      * @param newsId идентификатор удаляемой новости.
      */
     @Override
     public void deleteNews(Long newsId) {
+        commentsClient.deleteCommentsByNewsId(newsId);
         newsRepository.findById(newsId).ifPresent(newsRepository::delete);
     }
 
@@ -139,4 +148,47 @@ public class NewsServiceImpl implements NewsService {
                 .map(newsMapper::newsToResponse)
                 .toList();
     }
+
+    /**
+     * Получает новость со списком комментариев.
+     * Поиск по идентификатору новости (с учетом пагинации).
+     *
+     * @param newsId     идентификатор новости.
+     * @param pageNumber Номер страницы.
+     * @return Список комментариев по указанной странице.
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public NewsCommentsResponse getNewsByIdWithComments(Long newsId, int pageNumber) {
+        News news = newsRepository.findById(newsId)
+                .orElseThrow(() -> NewsNotFoundException.getById(newsId));
+
+        List<CommentResponse> comments = commentsClient.getCommentsByNewsId(newsId, pageNumber);
+        return newsMapper.newsToCommentsResponse(news, comments);
+    }
+
+    /**
+     * Получает комментарий по идентификатору.
+     *
+     * @param newsId    идентификатор новости.
+     * @param commentId идентификатор комментария.
+     * @return Комментарий.
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public CommentResponse getNewsCommentById(Long newsId, Long commentId) {
+        CommentResponse comment;
+        try {
+            comment = commentsClient.getCommentById(commentId);
+        } catch (FeignException e) {
+            throw CommentNotFoundException.getById(commentId);
+        }
+
+        if (!newsId.equals(comment.newsId())) {
+            throw NotMatchNewsCommentException.getById(newsId, commentId);
+        }
+
+        return comment;
+    }
+
 }
