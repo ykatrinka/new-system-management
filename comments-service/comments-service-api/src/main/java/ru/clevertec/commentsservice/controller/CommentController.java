@@ -1,5 +1,6 @@
 package ru.clevertec.commentsservice.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.commentsservice.dto.request.CommentRequest;
 import ru.clevertec.commentsservice.dto.response.CommentResponse;
 import ru.clevertec.commentsservice.service.CommentService;
+import ru.clevertec.commentsservice.util.DataOpenApi;
 
 import java.util.List;
 
@@ -33,13 +35,13 @@ import static ru.clevertec.commentsservice.util.BaseURLData.URL_NEWS_ID_COMMENTS
 import static ru.clevertec.commentsservice.util.BaseURLData.URL_NEWS_NEWS_ID;
 import static ru.clevertec.commentsservice.util.BaseURLData.URL_SEARCH;
 
+
 /**
  * @author Katerina
  * @version 1.0
  * <p>
  * Контроллер для работы с комментариями.
  */
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(BASE_URL_COMMENTS)
@@ -57,6 +59,7 @@ public class CommentController {
      * @return CommentResponse
      * Созданный комментарий с новым сгенерированным id.
      */
+    @Operation(summary = DataOpenApi.SUMMARY_ADD_COMMENT, tags = DataOpenApi.TAG_COMMENTS)
     @PostMapping
     public ResponseEntity<CommentResponse> createComment(@Valid @RequestBody CommentRequest commentRequest) {
         CommentResponse comment = commentService.createComment(commentRequest);
@@ -71,6 +74,7 @@ public class CommentController {
      * @param pageNumber Номер страницы для получения списка.
      * @return Список комментариев с учетом указанной страницы.
      */
+    @Operation(summary = DataOpenApi.SUMMARY_GET_ALL_COMMENTS, tags = DataOpenApi.TAG_COMMENTS)
     @GetMapping
     public ResponseEntity<List<CommentResponse>> getAllComments(
             @RequestParam(
@@ -89,6 +93,7 @@ public class CommentController {
      * @return CommentResponse
      * Возвращает комментарий с данными.
      */
+    @Operation(summary = DataOpenApi.SUMMARY_GET_COMMENT, tags = DataOpenApi.TAG_COMMENTS)
     @GetMapping(value = URL_COMMENT_ID)
     public ResponseEntity<CommentResponse> getCommentById(@PathVariable(COMMENT_ID) Long commentId) {
         CommentResponse comment = commentService.getCommentById(commentId);
@@ -103,6 +108,7 @@ public class CommentController {
      * @return CommentResponse
      * Обновленный комментарий.
      */
+    @Operation(summary = DataOpenApi.SUMMARY_UPDATE_COMMENT, tags = DataOpenApi.TAG_COMMENTS)
     @PutMapping(URL_COMMENT_ID)
     public ResponseEntity<CommentResponse> updateComment(@PathVariable(COMMENT_ID) Long commentId,
                                                          @Valid @RequestBody CommentRequest commentRequest) {
@@ -116,6 +122,7 @@ public class CommentController {
      * @param commentId Идентификатор комментария для удаления.
      */
     @DeleteMapping(URL_COMMENT_ID)
+    @Operation(summary = DataOpenApi.SUMMARY_DELETE_COMMENT, tags = DataOpenApi.TAG_COMMENTS)
     public void deleteComment(@PathVariable(COMMENT_ID) Long commentId) {
         commentService.deleteComment(commentId);
     }
@@ -130,6 +137,7 @@ public class CommentController {
      * @param fields Перечень полей для поиска.
      * @return Список комментариев.
      */
+    @Operation(summary = DataOpenApi.SUMMARY_SEARCH_COMMENTS, tags = DataOpenApi.TAG_COMMENTS)
     @GetMapping(URL_SEARCH)
     public ResponseEntity<List<CommentResponse>> searchComments(
             @RequestParam(name = SEARCH_VALUE_PARAM) String text,
@@ -149,6 +157,8 @@ public class CommentController {
      *
      * @param newsId Идентификатор новости.
      */
+    @Operation(summary = DataOpenApi.SUMMARY_DELETE_COMMENTS_BY_NEWS_ID,
+            tags = DataOpenApi.TAG_NEWS_FEIGN)
     @DeleteMapping(URL_NEWS_NEWS_ID)
     public void deleteCommentsByNewsId(@PathVariable(NEWS_ID) Long newsId) {
         commentService.deleteCommentsByNewsId(newsId);
@@ -163,6 +173,8 @@ public class CommentController {
      * @param pageNumber Номер страницы.
      * @return Список найденных комментариев.
      */
+    @Operation(summary = DataOpenApi.SUMMARY_GET_COMMENTS_BY_NEWS_ID,
+            tags = DataOpenApi.TAG_NEWS_FEIGN)
     @GetMapping(URL_NEWS_ID_COMMENTS)
     public ResponseEntity<List<CommentResponse>> getCommentsByNewsId(
             @PathVariable("newsId") long newsId,

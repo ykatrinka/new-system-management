@@ -1,0 +1,1452 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+
+    <changeSet id="insert-rows-comment" author="Katerina">
+        <insert tableName="comment">
+            <column name="news_id" value="1"/>
+            <column name="username" value="coralie"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Замечательно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="1"/>
+            <column name="username" value="willa"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Круто"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="1"/>
+            <column name="username" value="fredy"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="А яблоки для посетителей)))"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="1"/>
+            <column name="username" value="chelsey"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Fredy))))"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="1"/>
+            <column name="username" value="tara"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Полезная информация"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="1"/>
+            <column name="username" value="lora"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ожидаемо"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="1"/>
+            <column name="username" value="nick"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не интересно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="1"/>
+            <column name="username" value="mila"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не информативно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="1"/>
+            <column name="username" value="kitty"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Нет мыслей по поводу новости"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="1"/>
+            <column name="username" value="doberman"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Мелко, где глобальные новости"/>
+        </insert>
+
+        <!--======================================================-->
+
+        <insert tableName="comment">
+            <column name="news_id" value="2"/>
+            <column name="username" value="coralie"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Замечательно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="2"/>
+            <column name="username" value="willa"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Круто"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="2"/>
+            <column name="username" value="fredy"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="ИИ конечно помогает, но ждать ли восстания машин))))"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="2"/>
+            <column name="username" value="chelsey"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Fredy))))"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="2"/>
+            <column name="username" value="tara"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Бесполезная информация"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="2"/>
+            <column name="username" value="lora"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Так много ..."/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="2"/>
+            <column name="username" value="nick"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не интересно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="2"/>
+            <column name="username" value="mila"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Мало информации"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="2"/>
+            <column name="username" value="kitty"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Так это ж не у нас"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="2"/>
+            <column name="username" value="doberman"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Что-то вирусов многовато ..."/>
+        </insert>
+
+        <!--======================================================-->
+
+        <insert tableName="comment">
+            <column name="news_id" value="3"/>
+            <column name="username" value="coralie"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ха-ха, ай да Маск"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="3"/>
+            <column name="username" value="willa"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Что-то пошло не так ...."/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="3"/>
+            <column name="username" value="fredy"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Лучше б не покупал"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="3"/>
+            <column name="username" value="chelsey"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="После изменений - ожидаемо"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="3"/>
+            <column name="username" value="tara"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Закроется????"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="3"/>
+            <column name="username" value="lora"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ай-да Илон"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="3"/>
+            <column name="username" value="nick"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не пользовался, а теперь и начинать не буду"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="3"/>
+            <column name="username" value="mila"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Вот так инвестиции)))))"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="3"/>
+            <column name="username" value="kitty"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="@nick поддерживаю"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="3"/>
+            <column name="username" value="doberman"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Накреативили))))"/>
+        </insert>
+
+        <!--======================================================-->
+
+        <insert tableName="comment">
+            <column name="news_id" value="4"/>
+            <column name="username" value="coralie"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Что за новость???"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="4"/>
+            <column name="username" value="willa"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Полезно, но вопрос - зачем???"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="4"/>
+            <column name="username" value="fredy"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не встречал"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="4"/>
+            <column name="username" value="chelsey"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Видел, смешные"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="4"/>
+            <column name="username" value="tara"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Неадекватные"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="4"/>
+            <column name="username" value="lora"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Пусть развлекаются"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="4"/>
+            <column name="username" value="nick"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Странно смотрится со стороны"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="4"/>
+            <column name="username" value="mila"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не нормальные"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="4"/>
+            <column name="username" value="kitty"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="А мне нравиться"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="4"/>
+            <column name="username" value="doberman"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Без комментариев ..."/>
+        </insert>
+
+        <!--======================================================-->
+
+        <insert tableName="comment">
+            <column name="news_id" value="5"/>
+            <column name="username" value="coralie"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Замечательно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="5"/>
+            <column name="username" value="willa"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Круто"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="5"/>
+            <column name="username" value="fredy"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Неожиданно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="5"/>
+            <column name="username" value="chelsey"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Странно, ну да ладно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="5"/>
+            <column name="username" value="tara"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Так и не поняла за что"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="5"/>
+            <column name="username" value="lora"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Иногда странный выбор"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="5"/>
+            <column name="username" value="nick"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Это чтобы люди обратили внимание на проблему"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="5"/>
+            <column name="username" value="mila"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Так а сколько лет они этим занимаются?"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="5"/>
+            <column name="username" value="kitty"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Заслужили"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="5"/>
+            <column name="username" value="doberman"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ну, дали и дали"/>
+        </insert>
+
+        <!--======================================================-->
+
+        <insert tableName="comment">
+            <column name="news_id" value="6"/>
+            <column name="username" value="coralie"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ого"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="6"/>
+            <column name="username" value="willa"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Круто"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="6"/>
+            <column name="username" value="fredy"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Вот это инвестиции"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="6"/>
+            <column name="username" value="chelsey"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Масштабно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="6"/>
+            <column name="username" value="tara"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Большому кораблю - большое плавание"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="6"/>
+            <column name="username" value="lora"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Откуда????"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="6"/>
+            <column name="username" value="nick"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Главное не прогореть"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="6"/>
+            <column name="username" value="mila"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Мне не интересно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="6"/>
+            <column name="username" value="kitty"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Чуть-чуть про большие деньги"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="6"/>
+            <column name="username" value="doberman"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Как-то так"/>
+        </insert>
+
+        <!--======================================================-->
+
+        <insert tableName="comment">
+            <column name="news_id" value="7"/>
+            <column name="username" value="coralie"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ужас"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="7"/>
+            <column name="username" value="willa"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ого"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="7"/>
+            <column name="username" value="fredy"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Вот это затопило"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="7"/>
+            <column name="username" value="chelsey"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Сахара??"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="7"/>
+            <column name="username" value="tara"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Что с климатом?"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="7"/>
+            <column name="username" value="lora"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Очередное затопление"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="7"/>
+            <column name="username" value="nick"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="А там люди живут?"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="7"/>
+            <column name="username" value="mila"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ага, там и на дерево не залезешь"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="7"/>
+            <column name="username" value="kitty"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Нет мыслей по поводу новости"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="7"/>
+            <column name="username" value="doberman"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Что-то пошло не так"/>
+        </insert>
+
+        <!--======================================================-->
+
+        <insert tableName="comment">
+            <column name="news_id" value="8"/>
+            <column name="username" value="coralie"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не люблю кофе"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="8"/>
+            <column name="username" value="willa"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="То полезно, то не полезно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="8"/>
+            <column name="username" value="fredy"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Когда уже будет ясность с кофе"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="8"/>
+            <column name="username" value="chelsey"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ммммм, обожаю кофе"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="8"/>
+            <column name="username" value="tara"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Полезная информация"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="8"/>
+            <column name="username" value="lora"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Отлично"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="8"/>
+            <column name="username" value="nick"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Неплохо"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="8"/>
+            <column name="username" value="mila"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Прикольно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="8"/>
+            <column name="username" value="kitty"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Люблю кофе, но уменьшила количество потребления(((("/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="8"/>
+            <column name="username" value="doberman"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ох уж эти кофеманы"/>
+        </insert>
+
+        <!--======================================================-->
+
+        <insert tableName="comment">
+            <column name="news_id" value="9"/>
+            <column name="username" value="coralie"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Неожиданно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="9"/>
+            <column name="username" value="willa"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="А кто это"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="9"/>
+            <column name="username" value="fredy"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Так давно пора уже"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="9"/>
+            <column name="username" value="chelsey"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Поиграл, и хватит"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="9"/>
+            <column name="username" value="tara"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Интересно было смотреть за его игрой"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="9"/>
+            <column name="username" value="lora"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ждем новых звезд"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="9"/>
+            <column name="username" value="nick"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ну и ок"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="9"/>
+            <column name="username" value="mila"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не интересно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="9"/>
+            <column name="username" value="kitty"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Грустно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="9"/>
+            <column name="username" value="doberman"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не моя сфера интересов"/>
+        </insert>
+
+        <!--======================================================-->
+
+        <insert tableName="comment">
+            <column name="news_id" value="10"/>
+            <column name="username" value="coralie"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ох уж эти торги"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="10"/>
+            <column name="username" value="willa"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="А кто это"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="10"/>
+            <column name="username" value="fredy"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="А чего продать решили то????"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="10"/>
+            <column name="username" value="chelsey"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Это ж какие деньжищи"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="10"/>
+            <column name="username" value="tara"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Интересно было бы посмотреть за торгами"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="10"/>
+            <column name="username" value="lora"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Купили, продали"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="10"/>
+            <column name="username" value="nick"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ну и ок"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="10"/>
+            <column name="username" value="mila"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не интересно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="10"/>
+            <column name="username" value="kitty"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ждем"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="10"/>
+            <column name="username" value="doberman"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не моя сфера интересов"/>
+        </insert>
+
+        <!--======================================================-->
+
+        <insert tableName="comment">
+            <column name="news_id" value="11"/>
+            <column name="username" value="coralie"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ждем"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="11"/>
+            <column name="username" value="willa"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Полезная информация"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="11"/>
+            <column name="username" value="fredy"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Я сплю по ночам"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="11"/>
+            <column name="username" value="chelsey"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Красиво должно быть"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="11"/>
+            <column name="username" value="tara"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Интересно было бы посмотреть"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="11"/>
+            <column name="username" value="lora"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Как не проспать"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="11"/>
+            <column name="username" value="nick"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ну и ок"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="11"/>
+            <column name="username" value="mila"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не интересно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="11"/>
+            <column name="username" value="kitty"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Потом фотки посмотрю"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="11"/>
+            <column name="username" value="doberman"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не моя сфера интересов"/>
+        </insert>
+
+        <!--======================================================-->
+
+        <insert tableName="comment">
+            <column name="news_id" value="12"/>
+            <column name="username" value="coralie"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ждем"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="12"/>
+            <column name="username" value="willa"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Полезная информация"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="12"/>
+            <column name="username" value="fredy"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Бесполезно для меня"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="12"/>
+            <column name="username" value="chelsey"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Красиво должно быть"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="12"/>
+            <column name="username" value="tara"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Интересно было бы посмотреть"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="12"/>
+            <column name="username" value="lora"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Как не пропустить"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="12"/>
+            <column name="username" value="nick"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ну и ок"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="12"/>
+            <column name="username" value="mila"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не интересно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="12"/>
+            <column name="username" value="kitty"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Потом фотки посмотрю"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="12"/>
+            <column name="username" value="doberman"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не моя сфера интересов"/>
+        </insert>
+
+        <!--======================================================-->
+
+        <insert tableName="comment">
+            <column name="news_id" value="13"/>
+            <column name="username" value="coralie"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ужас"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="13"/>
+            <column name="username" value="willa"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Катастрофа"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="13"/>
+            <column name="username" value="fredy"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Бесполезно для меня"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="13"/>
+            <column name="username" value="chelsey"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Беда"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="13"/>
+            <column name="username" value="tara"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Страшное происшествие"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="13"/>
+            <column name="username" value="lora"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Стихия"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="13"/>
+            <column name="username" value="nick"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ну и ок"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="13"/>
+            <column name="username" value="mila"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не интересно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="13"/>
+            <column name="username" value="kitty"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Что с климатом"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="13"/>
+            <column name="username" value="doberman"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Страшное происшествие"/>
+        </insert>
+
+
+        <!--======================================================-->
+
+        <insert tableName="comment">
+            <column name="news_id" value="14"/>
+            <column name="username" value="coralie"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ужас"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="14"/>
+            <column name="username" value="willa"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Катастрофа"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="14"/>
+            <column name="username" value="fredy"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Бесполезно для меня"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="14"/>
+            <column name="username" value="chelsey"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Беда"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="14"/>
+            <column name="username" value="tara"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Страшное заболевание"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="14"/>
+            <column name="username" value="lora"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Много пострадавших"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="14"/>
+            <column name="username" value="nick"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ну и ок"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="14"/>
+            <column name="username" value="mila"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не интересно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="14"/>
+            <column name="username" value="kitty"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Снова вирусы"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="14"/>
+            <column name="username" value="doberman"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Страшное происшествие"/>
+        </insert>
+
+
+        <!--======================================================-->
+
+        <insert tableName="comment">
+            <column name="news_id" value="15"/>
+            <column name="username" value="coralie"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ужас"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="15"/>
+            <column name="username" value="willa"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Катастрофа"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="15"/>
+            <column name="username" value="fredy"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Бесполезно для меня"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="15"/>
+            <column name="username" value="chelsey"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Беда"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="15"/>
+            <column name="username" value="tara"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Страшное происшествие"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="15"/>
+            <column name="username" value="lora"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Стихия"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="15"/>
+            <column name="username" value="nick"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ну и ок"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="15"/>
+            <column name="username" value="mila"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не интересно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="15"/>
+            <column name="username" value="kitty"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Что с климатом"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="15"/>
+            <column name="username" value="doberman"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Страшное происшествие"/>
+        </insert>
+
+        <!--======================================================-->
+
+        <insert tableName="comment">
+            <column name="news_id" value="16"/>
+            <column name="username" value="coralie"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Шут"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="16"/>
+            <column name="username" value="willa"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не выиграет"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="16"/>
+            <column name="username" value="fredy"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="А как будет выкручиваться, если выиграет"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="16"/>
+            <column name="username" value="chelsey"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Клоун"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="16"/>
+            <column name="username" value="tara"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Цирк"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="16"/>
+            <column name="username" value="lora"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="За чей счет банкет"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="16"/>
+            <column name="username" value="nick"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ну и ок"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="16"/>
+            <column name="username" value="mila"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не интересно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="16"/>
+            <column name="username" value="kitty"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Что с Трампом???"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="16"/>
+            <column name="username" value="doberman"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="А вдруг"/>
+        </insert>
+
+        <!--======================================================-->
+
+        <insert tableName="comment">
+            <column name="news_id" value="17"/>
+            <column name="username" value="coralie"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Шуты"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="17"/>
+            <column name="username" value="willa"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Еще и награды получают))))"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="17"/>
+            <column name="username" value="fredy"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="А думаю были кандидаты получше)))))"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="17"/>
+            <column name="username" value="chelsey"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Клоуны"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="17"/>
+            <column name="username" value="tara"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Цирк"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="17"/>
+            <column name="username" value="lora"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="А ведь есть не вошедшие в перечень рассматриваемых))))"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="17"/>
+            <column name="username" value="nick"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ну и ок"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="17"/>
+            <column name="username" value="mila"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не интересно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="17"/>
+            <column name="username" value="kitty"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Никогда не понимал, зачем эта премия???"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="17"/>
+            <column name="username" value="doberman"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Странная премия"/>
+        </insert>
+
+        <!--======================================================-->
+
+        <insert tableName="comment">
+            <column name="news_id" value="18"/>
+            <column name="username" value="coralie"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Замечательно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="18"/>
+            <column name="username" value="willa"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Круто"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="18"/>
+            <column name="username" value="fredy"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ай да Маск"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="18"/>
+            <column name="username" value="chelsey"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ого, круто"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="18"/>
+            <column name="username" value="tara"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Интересная информация"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="18"/>
+            <column name="username" value="lora"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Вот и дождались"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="18"/>
+            <column name="username" value="nick"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не интересно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="18"/>
+            <column name="username" value="mila"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не информативно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="18"/>
+            <column name="username" value="kitty"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Нет мыслей по поводу новости"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="18"/>
+            <column name="username" value="doberman"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Глобальненько"/>
+        </insert>
+
+        <!--======================================================-->
+
+        <insert tableName="comment">
+            <column name="news_id" value="19"/>
+            <column name="username" value="coralie"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ох уж эти торги"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="19"/>
+            <column name="username" value="willa"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="А кто это"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="19"/>
+            <column name="username" value="fredy"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="А чего продать решили то????"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="19"/>
+            <column name="username" value="chelsey"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Это ж какие деньжищи"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="19"/>
+            <column name="username" value="tara"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Интересно было бы посмотреть за торгами"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="19"/>
+            <column name="username" value="lora"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Купили, продали"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="19"/>
+            <column name="username" value="nick"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ну и ок"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="19"/>
+            <column name="username" value="mila"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не интересно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="19"/>
+            <column name="username" value="kitty"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Неожиданно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="19"/>
+            <column name="username" value="doberman"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не моя сфера интересов"/>
+        </insert>
+
+        <!--======================================================-->
+
+        <insert tableName="comment">
+            <column name="news_id" value="20"/>
+            <column name="username" value="coralie"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Интересно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="20"/>
+            <column name="username" value="willa"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Неожиданно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="20"/>
+            <column name="username" value="fredy"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Известный факт"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="20"/>
+            <column name="username" value="chelsey"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ничего нового"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="20"/>
+            <column name="username" value="tara"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="А как вы думали"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="20"/>
+            <column name="username" value="lora"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Так это ж мемы"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="20"/>
+            <column name="username" value="nick"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Ну и ок"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="20"/>
+            <column name="username" value="mila"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не интересно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="20"/>
+            <column name="username" value="kitty"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Да ладно"/>
+        </insert>
+
+        <insert tableName="comment">
+            <column name="news_id" value="20"/>
+            <column name="username" value="doberman"/>
+            <column name="time" value="2024-10-12T19:03:28.832"/>
+            <column name="text" value="Не моя сфера интересов"/>
+        </insert>
+
+    </changeSet>
+
+
+</databaseChangeLog>
