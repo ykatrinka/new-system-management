@@ -1,9 +1,13 @@
 plugins {
+    id 'java-library'
     id 'modules-config'
     id 'spring-conventions'
 }
-
 apply from: "$rootProject.rootDir/buildSrc/versions.gradle"
+
+jar {
+    manifest.attributes("Main-Class": 'ru.clevertec.newsservice.NewsServiceApplication')
+}
 
 dependencies {
 

@@ -207,7 +207,7 @@ class NewsControllerIntegrationTest {
         long newsId = NewsTestData.NEWS_ID;
 
         WireMock.stubFor(
-                WireMock.delete(urlPathEqualTo("/" + newsId + "/comments"))
+                WireMock.delete(urlPathEqualTo("/comments/news/" + newsId))
                         .willReturn(
                                 aResponse()
                                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)

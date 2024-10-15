@@ -2,7 +2,7 @@ spring:
   application:
     name: news-service
   profiles:
-    active: dev
+    active: prod
   liquibase:
     change-log: db.changelog/changelog-master.xml
   jpa:
@@ -67,7 +67,7 @@ spring:
       on-profile: test
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://news-db:5432/news_system_test
+    url: jdbc:postgresql://localhost:5432/news_system
     username: postgres
     password: postgres
   feign:

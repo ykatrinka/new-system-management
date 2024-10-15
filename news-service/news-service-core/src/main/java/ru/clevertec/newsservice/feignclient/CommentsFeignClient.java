@@ -13,10 +13,10 @@ import static ru.clevertec.newsservice.util.Constants.CLIENT_NAME;
 import static ru.clevertec.newsservice.util.Constants.CLIENT_URL;
 import static ru.clevertec.newsservice.util.Constants.COMMENTS_COMMENTS_ID;
 import static ru.clevertec.newsservice.util.Constants.COMMENTS_NEWS_ID_COMMENTS;
+import static ru.clevertec.newsservice.util.Constants.COMMENTS_NEWS_NEWS_ID;
 import static ru.clevertec.newsservice.util.Constants.COMMENT_ID;
 import static ru.clevertec.newsservice.util.Constants.FIRST_PAGE;
 import static ru.clevertec.newsservice.util.Constants.NEWS_ID;
-import static ru.clevertec.newsservice.util.Constants.NEWS_ID_COMMENTS;
 import static ru.clevertec.newsservice.util.Constants.PAGE_NUMBER_PARAM;
 
 /**
@@ -59,6 +59,6 @@ public interface CommentsFeignClient {
      *
      * @param newsId идентификатор новости.
      */
-    @DeleteMapping(path = NEWS_ID_COMMENTS)
+    @DeleteMapping(path = COMMENTS_NEWS_NEWS_ID)
     void deleteCommentsByNewsId(@PathVariable(NEWS_ID) Long newsId);
 }

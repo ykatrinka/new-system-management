@@ -14,7 +14,7 @@ public class Constants {
     /**
      * Количество элементов на странице с новостями при пагинации.
      */
-    public static final int NEWS_PAGE_SIZE = 4;
+    public static final int NEWS_PAGE_SIZE = 10;
     /**
      * Сообщение об отсутствующем идентификаторе новости.
      */
@@ -39,7 +39,7 @@ public class Constants {
     public static final String CLIENT_URL = "${spring.feign.client.comments-service.url}";
 
     public static final String COMMENTS_NEWS_ID_COMMENTS = "/comments/{newsId}/comments";
-    public static final String NEWS_ID_COMMENTS = "/{newsId}/comments";
+    public static final String COMMENTS_NEWS_NEWS_ID = "/comments/news/{newsId}";
     public static final String COMMENTS_COMMENTS_ID = "/comments/{commentId}";
 
     public static final String NEWS_ID = "newsId";
@@ -66,4 +66,9 @@ public class Constants {
      * Тип применяемого кеширования.
      */
     public static final String CACHE_TYPE = "${cache.type}";
+
+    /**
+     * Сообщение, когда comments service возвращает 500 ошибку.
+     */
+    public static final String ERROR_FEIGN_COMMENTS = "Server comments error";
 }

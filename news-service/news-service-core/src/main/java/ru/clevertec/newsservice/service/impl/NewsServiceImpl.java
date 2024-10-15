@@ -13,6 +13,7 @@ import ru.clevertec.newsservice.dto.response.NewsCommentsResponse;
 import ru.clevertec.newsservice.dto.response.NewsResponse;
 import ru.clevertec.newsservice.entity.News;
 import ru.clevertec.newsservice.exception.CommentNotFoundException;
+import ru.clevertec.newsservice.exception.FeignServerErrorException;
 import ru.clevertec.newsservice.exception.NewsNotFoundException;
 import ru.clevertec.newsservice.exception.NoSuchSearchFieldException;
 import ru.clevertec.newsservice.exception.NotMatchNewsCommentException;
@@ -24,6 +25,7 @@ import ru.clevertec.newsservice.util.Constants;
 import ru.clevertec.newsservice.util.ReflectionUtil;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Katerina
@@ -163,8 +165,12 @@ public class NewsServiceImpl implements NewsService {
         News news = newsRepository.findById(newsId)
                 .orElseThrow(() -> NewsNotFoundException.getById(newsId));
 
-        List<CommentResponse> comments = commentsClient.getCommentsByNewsId(newsId, pageNumber);
-        return newsMapper.newsToCommentsResponse(news, comments);
+        try {
+            List<CommentResponse> comments = commentsClient.getCommentsByNewsId(newsId, pageNumber);
+            return newsMapper.newsToCommentsResponse(news, comments);
+        } catch (FeignException e) {
+            throw FeignServerErrorException.getInstance(Constants.ERROR_FEIGN_COMMENTS);
+        }
     }
 
     /**
@@ -177,11 +183,17 @@ public class NewsServiceImpl implements NewsService {
     @Transactional(readOnly = true)
     @Override
     public CommentResponse getNewsCommentById(Long newsId, Long commentId) {
+        Optional<News> news = newsRepository.findById(newsId);
+        if (news.isEmpty()) {
+            throw NewsNotFoundException.getById(newsId);
+        }
         CommentResponse comment;
         try {
             comment = commentsClient.getCommentById(commentId);
-        } catch (FeignException e) {
+        } catch (FeignException.NotFound e) {
             throw CommentNotFoundException.getById(commentId);
+        } catch (FeignException e) {
+            throw FeignServerErrorException.getInstance(Constants.ERROR_FEIGN_COMMENTS);
         }
 
         if (!newsId.equals(comment.newsId())) {
