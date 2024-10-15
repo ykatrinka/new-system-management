@@ -1,5 +1,6 @@
 package ru.clevertec.newsservice.dto.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import org.hibernate.validator.constraints.Length;
@@ -23,8 +24,10 @@ public record NewsRequest(
         LocalDateTime time,
         @NotBlank
         @Length(min = MIN_TITLE_LENGTH, max = MAX_TITLE_LENGTH)
+        @Schema(defaultValue = "News title", description = "Title")
         String title,
         @NotBlank
+        @Schema(defaultValue = "This is content news", description = "Text news")
         String text
 ) {
 }

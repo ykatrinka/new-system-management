@@ -2,8 +2,11 @@ plugins {
     id 'modules-config'
     id 'spring-conventions'
 }
-
 apply from: "$rootProject.rootDir/buildSrc/versions.gradle"
+
+jar {
+    manifest.attributes("Main-Class": 'ru.clevertec.commentsservice.CommentsServiceApplication')
+}
 
 dependencies {
 

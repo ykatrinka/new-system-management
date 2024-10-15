@@ -1,5 +1,6 @@
 package ru.clevertec.newsservice.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import ru.clevertec.newsservice.dto.response.CommentResponse;
 import ru.clevertec.newsservice.dto.response.NewsCommentsResponse;
 import ru.clevertec.newsservice.dto.response.NewsResponse;
 import ru.clevertec.newsservice.service.NewsService;
+import ru.clevertec.newsservice.util.DataOpenApi;
 
 import java.util.List;
 
@@ -59,6 +61,7 @@ public class NewsController {
      * @return NewsResponse
      * Созданная новость с новым сгенерированным id.
      */
+    @Operation(summary = DataOpenApi.SUMMARY_ADD_NEWS, tags = DataOpenApi.TAG_NEWS)
     @PostMapping
     public ResponseEntity<NewsResponse> createNews(@Valid @RequestBody NewsRequest newsRequest) {
         NewsResponse news = newsService.createNews(newsRequest);
@@ -73,6 +76,7 @@ public class NewsController {
      * @param pageNumber Номер страницы для получения списка.
      * @return Список новостей с учетом указанной страницы.
      */
+    @Operation(summary = DataOpenApi.SUMMARY_GET_ALL_NEWS, tags = DataOpenApi.TAG_NEWS)
     @GetMapping
     public ResponseEntity<List<NewsResponse>> getAllNews(
             @RequestParam(
@@ -90,6 +94,7 @@ public class NewsController {
      * @return NewsResponse
      * Возвращает данные по новости.
      */
+    @Operation(summary = DataOpenApi.SUMMARY_GET_NEWS, tags = DataOpenApi.TAG_NEWS)
     @GetMapping(value = URL_NEWS_ID, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<NewsResponse> getNewsById(@PathVariable(NEWS_ID_PARAM) Long newsId) {
         NewsResponse news = newsService.getNewsById(newsId);
@@ -104,6 +109,7 @@ public class NewsController {
      * @return NewsResponse
      * Обновленная новость.
      */
+    @Operation(summary = DataOpenApi.SUMMARY_UPDATE_NEWS, tags = DataOpenApi.TAG_NEWS)
     @PutMapping("/{newsId}")
     public ResponseEntity<NewsResponse> updateNews(@PathVariable(NEWS_ID_PARAM) Long newsId,
                                                    @Valid @RequestBody NewsRequest newsRequest) {
@@ -116,6 +122,7 @@ public class NewsController {
      *
      * @param newsId Идентификатор новости для удаления.
      */
+    @Operation(summary = DataOpenApi.SUMMARY_DELETE_NEWS, tags = DataOpenApi.TAG_NEWS)
     @DeleteMapping(URL_NEWS_ID)
     public void deleteNews(@PathVariable(NEWS_ID_PARAM) Long newsId) {
         newsService.deleteNews(newsId);
@@ -131,6 +138,7 @@ public class NewsController {
      * @param fields Перечень полей для поиска.
      * @return Список новостей.
      */
+    @Operation(summary = DataOpenApi.SUMMARY_SEARCH_NEWS, tags = DataOpenApi.TAG_NEWS)
     @GetMapping(URL_SEARCH)
     public ResponseEntity<List<NewsResponse>> searchNews(
             @RequestParam(name = SEARCH_VALUE_PARAM) String text,
@@ -151,6 +159,8 @@ public class NewsController {
      * @param pageNumber Номер страницы.
      * @return Список комментариев по указанной странице.
      */
+    @Operation(summary = DataOpenApi.SUMMARY_GET_NEWS_WITH_COMMENTS,
+            tags = DataOpenApi.TAG_COMMENTS_FEIGN)
     @GetMapping(value = URL_NEWS_ID_COMMENTS, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<NewsCommentsResponse> getNewsById(
             @PathVariable(NEWS_ID_PARAM) Long newsId,
@@ -170,6 +180,8 @@ public class NewsController {
      * @param commentId идентификатор комментария.
      * @return Комментарий.
      */
+    @Operation(summary = DataOpenApi.SUMMARY_GET_COMMENT,
+            tags = DataOpenApi.TAG_COMMENTS_FEIGN)
     @GetMapping(value = URL_NEWS_ID_COMMENTS_COMMENTS_ID, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommentResponse> getCommentById(
             @PathVariable(NEWS_ID_PARAM) Long newsId,

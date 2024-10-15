@@ -388,6 +388,8 @@ class NewsServiceImplTest {
             Long commentId = NewsTestData.COMMENTS_ID_FOR_GET;
             CommentResponse comment = NewsTestData.getCommentResponseForGetById();
 
+            when(newsRepository.findById(newsId))
+                    .thenReturn(Optional.ofNullable(NewsTestData.getFillNewsForGetById()));
             when(commentsFeignClient.getCommentById(commentId))
                     .thenReturn(comment);
 
@@ -414,8 +416,10 @@ class NewsServiceImplTest {
             Long newsId = NewsTestData.NEWS_ID_FOR_COMMENTS;
             Long commentId = NewsTestData.COMMENTS_ID_FOR_GET;
 
+            when(newsRepository.findById(newsId))
+                    .thenReturn(Optional.ofNullable(NewsTestData.getFillNewsForGetById()));
             when(commentsFeignClient.getCommentById(commentId))
-                    .thenThrow(FeignException.class);
+                    .thenThrow(FeignException.NotFound.class);
 
             //when, then
             assertThrows(CommentNotFoundException.class,
@@ -432,6 +436,8 @@ class NewsServiceImplTest {
             Long commentId = NewsTestData.COMMENTS_ID_FOR_GET;
             CommentResponse comment = NewsTestData.getCommentResponseWithOtherNewsId();
 
+            when(newsRepository.findById(newsId))
+                    .thenReturn(Optional.ofNullable(NewsTestData.getFillNewsForGetById()));
             when(commentsFeignClient.getCommentById(commentId))
                     .thenReturn(comment);
 

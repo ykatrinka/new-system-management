@@ -5,12 +5,17 @@ plugins {
 
 apply from: "$rootProject.rootDir/buildSrc/versions.gradle"
 
+bootJar {
+    enabled false
+}
+
 dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.liquibase:liquibase-core'
 
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     implementation "org.mapstruct:mapstruct-processor:${mapstructVersion}"

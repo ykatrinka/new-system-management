@@ -19,7 +19,7 @@ public class NewsTestData {
 
     public static final LocalDateTime CREATED_DATE = LocalDateTime
             .of(2024, 9, 3, 0, 0, 0);
-    public static final int PAGE_SIZE_NEWS = 4;
+    public static final int PAGE_SIZE_NEWS = 10;
     public static final int PAGE_NUMBER_NEWS = 1;
 
     public static final long NEWS_ID_FOR_GET = 1L;

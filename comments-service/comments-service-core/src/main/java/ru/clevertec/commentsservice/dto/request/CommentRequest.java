@@ -1,5 +1,6 @@
 package ru.clevertec.commentsservice.dto.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -25,14 +26,17 @@ public record CommentRequest(
 
         @NotNull
         @Length(min = MIN_USERNAME_LENGTH, max = MAX_USERNAME_LENGTH)
+        @Schema(defaultValue = "Patrik", description = "Username")
         String username,
 
         @NotNull
+        @Schema(defaultValue = "1", description = "News id")
         Long newsId,
 
         LocalDateTime time,
 
         @NotBlank
+        @Schema(defaultValue = "This is comment", description = "Text comment")
         String text
 ) {
 }
