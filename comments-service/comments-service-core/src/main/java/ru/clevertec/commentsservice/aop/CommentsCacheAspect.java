@@ -6,6 +6,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ru.clevertec.commentsservice.cache.CustomCache;
 import ru.clevertec.commentsservice.entity.Comment;
@@ -19,6 +20,7 @@ import java.util.Optional;
  * Аспект для работы с кэшем.
  */
 @Slf4j
+@Profile("dev")
 @Component
 @Aspect
 @RequiredArgsConstructor

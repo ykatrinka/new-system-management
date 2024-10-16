@@ -3,6 +3,9 @@ package ru.clevertec.commentsservice.service.impl;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -55,6 +58,7 @@ public class CommentServiceImpl implements CommentService {
      * @return CommentResponse
      * Возвращает созданную сущность с новым сгенерированным id.
      */
+    @CachePut(value = "comment", key = "#result.id")
     @Override
     public CommentResponse createComment(CommentRequest commentRequest) {
         checkNewsIsExists(commentRequest.newsId());
@@ -89,6 +93,7 @@ public class CommentServiceImpl implements CommentService {
      * @param commentsId идентификатор комментария для получения.
      * @return Найденный комментарий из базы данных.
      */
+    @Cacheable(value = "comment")
     @Override
     @Transactional(readOnly = true)
     public CommentResponse getCommentById(Long commentsId) {
@@ -107,6 +112,7 @@ public class CommentServiceImpl implements CommentService {
      * @return CommentResponse
      * Возвращает обновленная сущность.
      */
+    @CachePut(value = "comment", key = "#result.id")
     @Override
     public CommentResponse updateComment(Long commentId, CommentRequest commentRequest) {
         checkNewsIsExists(commentRequest.newsId());
@@ -126,6 +132,7 @@ public class CommentServiceImpl implements CommentService {
      *
      * @param commentId идентификатор удаляемого комментария.
      */
+    @CacheEvict(value = "comment")
     @Override
     public void deleteComment(Long commentId) {
         commentRepository.findById(commentId).ifPresent(commentRepository::delete);

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import static ru.clevertec.newsservice.util.Constants.MAX_TITLE_LENGTH;
@@ -29,5 +30,5 @@ public record NewsRequest(
         @NotBlank
         @Schema(defaultValue = "This is content news", description = "Text news")
         String text
-) {
+) implements Serializable {
 }

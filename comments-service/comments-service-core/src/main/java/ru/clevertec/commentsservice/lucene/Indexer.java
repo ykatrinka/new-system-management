@@ -7,14 +7,16 @@ import org.hibernate.search.mapper.orm.massindexing.MassIndexer;
 import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.commentsservice.exception.CommentIndexException;
 import ru.clevertec.commentsservice.util.Constants;
 
 /**
- * Listner для работы с кэшем.
+ * Listener для работы с кэшем.
  */
+@Profile("dev")
 @Transactional
 @Component
 @RequiredArgsConstructor

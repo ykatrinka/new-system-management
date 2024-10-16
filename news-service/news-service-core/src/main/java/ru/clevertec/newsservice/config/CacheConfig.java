@@ -3,6 +3,7 @@ package ru.clevertec.newsservice.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import ru.clevertec.newsservice.cache.CustomCache;
 import ru.clevertec.newsservice.cache.factory.CacheType;
 import ru.clevertec.newsservice.cache.factory.impl.CacheFactoryImpl;
@@ -14,6 +15,7 @@ import ru.clevertec.newsservice.util.Constants;
  * @version 1.0.0
  * Конфигурация кеширования.
  */
+@Profile("dev")
 @Configuration
 public class CacheConfig {
 
