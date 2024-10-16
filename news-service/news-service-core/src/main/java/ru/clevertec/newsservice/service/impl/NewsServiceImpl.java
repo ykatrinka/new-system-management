@@ -3,6 +3,9 @@ package ru.clevertec.newsservice.service.impl;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -48,6 +51,7 @@ public class NewsServiceImpl implements NewsService {
      * @return NewsResponse
      * Возвращает созданную сущность с новым сгенерированным id.
      */
+    @CachePut(value = "news", key = "#result.id")
     @Override
     public NewsResponse createNews(NewsRequest newsRequest) {
         News news = newsMapper.requestToNews(newsRequest);
@@ -79,6 +83,7 @@ public class NewsServiceImpl implements NewsService {
      * @param newsId идентификатор новости для получения.
      * @return Найденная новость из базы данных.
      */
+    @Cacheable(value = "news")
     @Transactional(readOnly = true)
     @Override
     public NewsResponse getNewsById(Long newsId) {
@@ -97,6 +102,7 @@ public class NewsServiceImpl implements NewsService {
      * @return NewsResponse
      * Возвращает обновленную сущность.
      */
+    @CachePut(value = "news", key = "#result.id")
     @Override
     public NewsResponse updateNews(Long newsId, NewsRequest newsRequest) {
         News news = newsRepository.findById(newsId)
@@ -115,6 +121,7 @@ public class NewsServiceImpl implements NewsService {
      *
      * @param newsId идентификатор удаляемой новости.
      */
+    @CacheEvict(value = "news")
     @Override
     public void deleteNews(Long newsId) {
         commentsClient.deleteCommentsByNewsId(newsId);

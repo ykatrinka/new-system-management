@@ -12,7 +12,16 @@ services:
       - "5432:5432"
     networks:
       - news-system
-
+  cache-redis:
+    image: redis:alpine
+    restart: on-failure
+    container_name: cache-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - cache:/data
+    networks:
+      - news-system
   news-service:
     image: news-service-image
     container_name: news-service
@@ -23,9 +32,9 @@ services:
       - "8081:8081"
     depends_on:
       - news-db
+      - cache-redis
     networks:
       - news-system
-
   comments-service:
     image: comments-service-image
     container_name: comments-service
@@ -36,9 +45,11 @@ services:
       - "8082:8082"
     depends_on:
       - news-db
+      - cache-redis
     networks:
       - news-system
-
 networks:
   news-system:
     driver: bridge
+volumes:
+  cache:

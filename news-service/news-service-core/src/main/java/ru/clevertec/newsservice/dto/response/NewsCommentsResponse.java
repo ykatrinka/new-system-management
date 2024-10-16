@@ -2,6 +2,7 @@ package ru.clevertec.newsservice.dto.response;
 
 import lombok.Builder;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,5 +24,5 @@ public record NewsCommentsResponse(
         String title,
         String text,
         List<CommentResponse> comments
-) {
+) implements Serializable {
 }

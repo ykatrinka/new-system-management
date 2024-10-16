@@ -2,6 +2,7 @@ package ru.clevertec.newsservice.dto.response;
 
 import lombok.Builder;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -19,5 +20,5 @@ public record NewsResponse(
         LocalDateTime time,
         String title,
         String text
-) {
+) implements Serializable {
 }

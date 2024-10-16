@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import static ru.clevertec.commentsservice.util.Constants.MAX_USERNAME_LENGTH;
@@ -38,7 +39,7 @@ public record CommentRequest(
         @NotBlank
         @Schema(defaultValue = "This is comment", description = "Text comment")
         String text
-) {
+) implements Serializable {
 }
 
 

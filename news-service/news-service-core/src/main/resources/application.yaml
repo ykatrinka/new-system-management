@@ -5,15 +5,11 @@ spring:
     active: prod
   liquibase:
     change-log: db.changelog/changelog-master.xml
+    enabled: false
   jpa:
     generate-ddl: false
     show-sql: true
-  properties:
-    hibernate:
-      search:
-        backend:
-          type: lucene
-          directory.root: ./data/index
+    open-in-view: false
 logging:
   level:
     root: INFO
@@ -23,10 +19,6 @@ logging:
     name: ./logs/log-file.log
 server:
   port: 8081
-
-cache:
-  capacity: 10
-  type: LRU
 
 ---
 spring:
@@ -38,11 +30,21 @@ spring:
     username: postgres
     password: postgres
     url: jdbc:postgresql://localhost:5432/news_system
+  properties:
+    hibernate:
+      search:
+        backend:
+          type: lucene
+          directory.root: ./data/index
   feign:
     client:
       comments-service:
         name: comments-service
         url: "http://localhost:8082"
+cache:
+  capacity: 10
+  type: LRU
+
 
 ---
 spring:
@@ -54,6 +56,12 @@ spring:
     url: jdbc:postgresql://news-db:5432/news_system
     username: postgres
     password: postgres
+  data:
+    redis:
+      host: cache-redis
+      port: 6379
+  cache:
+    type: redis
   feign:
     client:
       comments-service:
