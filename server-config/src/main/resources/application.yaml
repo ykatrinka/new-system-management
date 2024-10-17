@@ -1,0 +1,13 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: server-config
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/ykatrinka/news-system-cloud-config.git
+          default-label: master
+          search-paths: "{application}"

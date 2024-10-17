@@ -1,6 +1,7 @@
 version: "3.9"
 
 services:
+
   news-db:
     image: postgres:17-alpine
     environment:
@@ -12,6 +13,23 @@ services:
       - "5432:5432"
     networks:
       - news-system
+
+
+  server-config:
+    image: hyness/spring-cloud-config-server
+    build:
+      context: ./server-config
+      dockerfile: Dockerfile
+    container_name: server-config
+    ports:
+      - "8888:8888"
+    environment:
+      SPRING_CLOUD_CONFIG_SERVER_GIT_URI: https://github.com/ykatrinka/news-cloud-config.git
+      SPRING_CLOUD_CONFIG_SERVER_GIT_DEFAULT_LABEL: master
+    networks:
+      - news-system
+
+
   cache-redis:
     image: redis:alpine
     restart: on-failure
@@ -22,6 +40,8 @@ services:
       - cache:/data
     networks:
       - news-system
+
+
   news-service:
     image: news-service-image
     container_name: news-service
@@ -30,11 +50,15 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8081:8081"
+    restart: unless-stopped
     depends_on:
       - news-db
       - cache-redis
+      - server-config
     networks:
       - news-system
+
+
   comments-service:
     image: comments-service-image
     container_name: comments-service
@@ -43,13 +67,19 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8082:8082"
+    restart: unless-stopped
     depends_on:
       - news-db
       - cache-redis
+      - server-config
     networks:
       - news-system
+
+
 networks:
   news-system:
     driver: bridge
+
+
 volumes:
   cache:
