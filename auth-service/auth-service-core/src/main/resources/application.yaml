@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: auth-service
+  cloud:
+    config:
+      enabled: false
+    #  cloud:
+    #    config:
+    #      fail-fast: true
+    #  profiles:
+    #    active: prod
+    #    active: dev
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/auth_db
+    username: postgres
+    password: postgres
+  liquibase:
+    change-log: db.changelog/changelog-master.xml
+  jpa:
+    generate-ddl: false
+    show-sql: true
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    ru.clevertec: debug
+  file:
+    name: ./logs/log-file.log
+server:
+  port: 8003
+security:
+  jwt:
+    secret-key: 'mtc3334dwMITX7fn5nveWDs8MTXyfmZ53JmdcySpd2o'
+    expiration-time: 3600000

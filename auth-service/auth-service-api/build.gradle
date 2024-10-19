@@ -1,0 +1,14 @@
+plugins {
+    id 'modules-config'
+    id 'spring-conventions'
+}
+apply from: "$rootProject.rootDir/buildSrc/versions.gradle"
+
+jar {
+    manifest.attributes("Main-Class": 'ru.clevertec.authservice.AuthServiceApplication')
+}
+
+dependencies {
+    implementation project(':auth-service-core')
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+}
