@@ -18,12 +18,11 @@ import java.time.LocalDateTime;
  */
 @Builder
 public record CommentResponse(
-
         Long id,
         LocalDateTime time,
-        String text,
         String username,
-        Long newsId
+        Long newsId,
+        String text
 ) implements Serializable {
 
 }

@@ -1,17 +1,17 @@
-package ru.clevertec.authservice.conf;
+package ru.clevertec.newsservice.config.sec;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ru.clevertec.authservice.filter.JwtAuthenticationFilter;
-import ru.clevertec.authservice.util.Constants;
+import ru.clevertec.newsservice.filter.JwtAuthenticationFilter;
+import ru.clevertec.newsservice.util.DataSecurity;
 
 /**
  * @author Katerina
@@ -27,10 +27,6 @@ public class SecurityConfiguration {
      * JWT фильтр.
      */
     private final JwtAuthenticationFilter jwtAuthFilter;
-    /**
-     * Авторизационный провайдер.
-     */
-    private final AuthenticationProvider authenticationProvider;
 
     /**
      * Bean с установленными фильтрами.
@@ -45,19 +41,21 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(Constants.URL_SEC_AUTH)
-                        .permitAll()
-                        .requestMatchers(Constants.URL_SEC_OPEN_API)
-                        .permitAll()
-                        .requestMatchers(Constants.URL_SEC_OPEN_API_DOC)
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("v3/api-docs/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/news").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/news/{newsId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/news/search").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/news").hasAnyAuthority(DataSecurity.ROLE_ADMIN, DataSecurity.ROLE_JOURNALIST)
+                        .requestMatchers(HttpMethod.PUT, "/news/{newsId}").hasAnyAuthority(DataSecurity.ROLE_ADMIN, DataSecurity.ROLE_JOURNALIST)
+                        .requestMatchers(HttpMethod.DELETE, "/news/{newsId}").hasAnyAuthority(DataSecurity.ROLE_ADMIN, DataSecurity.ROLE_JOURNALIST)
+                        .requestMatchers(HttpMethod.GET, "/news/{newsId}/comments/{commentsId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/news/{newsId}/comments").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(
                         SessionCreationPolicy.STATELESS)
                 )
-                .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

@@ -32,6 +32,11 @@ public class Constants {
     public static final String ERROR_FEIGN_NEWS = "Server news error";
 
     /**
+     * Сообщение о не корректно указанном поле для полнотекстового поиска.
+     */
+    public static final String ERROR_ANOTHER_AUTHOR = "You are not author";
+
+    /**
      * URL для получения новости по идентификатору.
      */
     public static final String URL_NEWS_NEWS_ID = "/news/{newsId}";
@@ -62,4 +67,8 @@ public class Constants {
      * Тип применяемого кеширования.
      */
     public static final String CACHE_TYPE = "${cache.type}";
+
+    public static final int MIN_PASSWORD_LENGTH = 3;
+    public static final int MAX_PASSWORD_LENGTH = 100;
+
 }

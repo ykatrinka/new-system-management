@@ -21,6 +21,7 @@ import java.util.List;
 public record NewsCommentsResponse(
         Long id,
         LocalDateTime time,
+        String username,
         String title,
         String text,
         List<CommentResponse> comments

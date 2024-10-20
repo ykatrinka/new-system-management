@@ -1,7 +1,6 @@
 package ru.clevertec.newsservice.service;
 
 
-import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.newsservice.dto.request.NewsRequest;
 import ru.clevertec.newsservice.dto.response.CommentResponse;
 import ru.clevertec.newsservice.dto.response.NewsCommentsResponse;
@@ -44,8 +43,8 @@ public interface NewsService {
     /**
      * Метод для обновления новости в базе данных.
      *
-     * @param newsRequest Полученные данные для обновления новости.
      * @param newsId      идентификатор обновляемой новости.
+     * @param newsRequest Полученные данные для обновления новости.
      * @return NewsResponse
      * Возвращает обновленную сущность.
      */
@@ -77,7 +76,6 @@ public interface NewsService {
      * @param pageNumber Номер страницы.
      * @return Список комментариев по указанной странице.
      */
-    @Transactional(readOnly = true)
     NewsCommentsResponse getNewsByIdWithComments(Long newsId, int pageNumber);
 
     /**
@@ -87,6 +85,5 @@ public interface NewsService {
      * @param commentId идентификатор комментария.
      * @return Комментарий.
      */
-    @Transactional(readOnly = true)
     CommentResponse getNewsCommentById(Long newsId, Long commentId);
 }

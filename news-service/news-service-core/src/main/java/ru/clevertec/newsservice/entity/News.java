@@ -46,6 +46,10 @@ public class News implements Serializable {
     @CreationTimestamp
     private LocalDateTime time;
 
+    @Column
+    private String username;
+
+
     @FullTextField
     @Column
     private String title;

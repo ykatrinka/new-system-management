@@ -13,6 +13,5 @@ import lombok.NoArgsConstructor;
 public class DataOpenApi {
     public static final String TAG_AUTH = "Authenticate Controller";
     public static final String SUMMARY_REGISTER_USER = "Register a new user";
-    public static final String SUMMARY_AUTH_USER = "Authenticate user";
-
+    public static final String SUMMARY_TOKEN = "Get token";
 }

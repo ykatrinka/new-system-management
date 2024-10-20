@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.clevertec.authservice.dto.response.AuthenticationResponse;
 import ru.clevertec.authservice.dto.request.LoginUser;
 import ru.clevertec.authservice.dto.request.RegisterUser;
+import ru.clevertec.authservice.dto.response.AuthenticationResponse;
 import ru.clevertec.authservice.service.UserService;
 import ru.clevertec.authservice.util.BaseURLData;
 import ru.clevertec.authservice.util.DataOpenApi;
@@ -47,15 +47,15 @@ public class UserController {
     }
 
     /**
-     * Endpoint для авторизации пользователя.
+     * Endpoint для получения токена.
      *
      * @param loginUser Данные из запроса для авторизации пользователя.
      * @return AuthenticationResponse с токеном.
      * Данные о пользователе: имя и роль.
      */
-    @Operation(summary = DataOpenApi.SUMMARY_AUTH_USER, tags = DataOpenApi.TAG_AUTH)
-    @PostMapping(value = BaseURLData.URL_LOGIN, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AuthenticationResponse> authenticate(@Valid @RequestBody LoginUser loginUser) {
+    @Operation(summary = DataOpenApi.SUMMARY_TOKEN, tags = DataOpenApi.TAG_AUTH)
+    @PostMapping(value = BaseURLData.URL_TOKEN, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AuthenticationResponse> getToken(@Valid @RequestBody LoginUser loginUser) {
         return new ResponseEntity<>(userService.authenticate(loginUser), HttpStatus.OK);
     }
 }

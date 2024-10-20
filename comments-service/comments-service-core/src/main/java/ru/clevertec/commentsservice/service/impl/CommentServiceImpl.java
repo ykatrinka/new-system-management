@@ -9,12 +9,16 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.commentsservice.dto.request.CommentRequest;
 import ru.clevertec.commentsservice.dto.response.CommentResponse;
 import ru.clevertec.commentsservice.dto.response.NewsResponse;
 import ru.clevertec.commentsservice.entity.Comment;
+import ru.clevertec.commentsservice.exception.AnotherAuthorException;
 import ru.clevertec.commentsservice.exception.CommentNotFoundException;
 import ru.clevertec.commentsservice.exception.FeignServerErrorException;
 import ru.clevertec.commentsservice.exception.NewsNotFoundException;
@@ -24,13 +28,15 @@ import ru.clevertec.commentsservice.mapper.CommentMapper;
 import ru.clevertec.commentsservice.repository.CommentRepository;
 import ru.clevertec.commentsservice.service.CommentService;
 import ru.clevertec.commentsservice.util.Constants;
+import ru.clevertec.commentsservice.util.DataSecurity;
 import ru.clevertec.commentsservice.util.ReflectionUtil;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
- * * @author Katerina
- * * @version 1.0.0
+ * @author Katerina
+ * @version 1.0.0
  * Сервис, реализующий работу с комментариями.
  */
 @Service
@@ -61,6 +67,9 @@ public class CommentServiceImpl implements CommentService {
     @CachePut(value = "comment", key = "#result.id")
     @Override
     public CommentResponse createComment(CommentRequest commentRequest) {
+        if (isNotValidUser(commentRequest.username())) {
+            throw AnotherAuthorException.getInstance(Constants.ERROR_ANOTHER_AUTHOR);
+        }
         checkNewsIsExists(commentRequest.newsId());
 
         Comment comment = commentMapper.requestToComment(commentRequest);
@@ -107,14 +116,18 @@ public class CommentServiceImpl implements CommentService {
     /**
      * Метод для обновления комментария в базе данных.
      *
-     * @param commentRequest Полученные данные для обновления комментария.
      * @param commentId      идентификатор обновляемого комментария.
+     * @param commentRequest Полученные данные для обновления комментария.
      * @return CommentResponse
      * Возвращает обновленная сущность.
      */
     @CachePut(value = "comment", key = "#result.id")
     @Override
     public CommentResponse updateComment(Long commentId, CommentRequest commentRequest) {
+        Optional<Comment> commentInDB = commentRepository.findById(commentId);
+        if (commentInDB.isPresent() && isNotValidUser(commentInDB.get().getUsername())) {
+            throw AnotherAuthorException.getInstance(Constants.ERROR_ANOTHER_AUTHOR);
+        }
         checkNewsIsExists(commentRequest.newsId());
 
         Comment comment = commentRepository.findById(commentId)
@@ -135,7 +148,11 @@ public class CommentServiceImpl implements CommentService {
     @CacheEvict(value = "comment")
     @Override
     public void deleteComment(Long commentId) {
-        commentRepository.findById(commentId).ifPresent(commentRepository::delete);
+        Optional<Comment> comment = commentRepository.findById(commentId);
+        if (comment.isPresent() && isNotValidUser(comment.get().getUsername())) {
+            throw AnotherAuthorException.getInstance(Constants.ERROR_ANOTHER_AUTHOR);
+        }
+        comment.ifPresent(commentRepository::delete);
     }
 
     /**
@@ -169,33 +186,6 @@ public class CommentServiceImpl implements CommentService {
     }
 
     /**
-     * Метод выполняет запрос к news-service.
-     * Проверяется статус и наличие новости с указанным id.
-     * В случаях не найденной новости или ошибки соединения
-     * выбрасывается исключение с сообщением об ошибке.
-     *
-     * @param newsId Идентификатор новости.
-     */
-    private void checkNewsIsExists(Long newsId) {
-        try {
-            ResponseEntity<NewsResponse> newsResponse = newsClient.getNewsById(newsId);
-
-            if (newsResponse.getStatusCode().is5xxServerError()) {
-                throw FeignServerErrorException.getInstance(Constants.ERROR_FEIGN_NEWS);
-            }
-
-            if (newsResponse.getBody() == null) {
-                throw NewsNotFoundException.getById(newsId);
-            }
-
-        } catch (FeignException.NotFound e) {
-            throw NewsNotFoundException.getById(newsId);
-        } catch (FeignException e) {
-            throw FeignServerErrorException.getInstance(Constants.ERROR_FEIGN_NEWS);
-        }
-    }
-
-    /**
      * Удаляет все комментарии по идентификатору новости.
      *
      * @param newsId Идентификатор новости.
@@ -226,4 +216,53 @@ public class CommentServiceImpl implements CommentService {
                 .toList();
     }
 
+    /**
+     * Метод выполняет запрос к news-service.
+     * Проверяется статус и наличие новости с указанным id.
+     * В случаях не найденной новости или ошибки соединения
+     * выбрасывается исключение с сообщением об ошибке.
+     *
+     * @param newsId Идентификатор новости.
+     */
+    private void checkNewsIsExists(Long newsId) {
+        try {
+            ResponseEntity<NewsResponse> newsResponse = newsClient.getNewsById(newsId);
+
+            if (newsResponse.getStatusCode().is5xxServerError()) {
+                throw FeignServerErrorException.getInstance(Constants.ERROR_FEIGN_NEWS);
+            }
+
+            if (newsResponse.getBody() == null) {
+                throw NewsNotFoundException.getById(newsId);
+            }
+
+        } catch (FeignException.NotFound e) {
+            throw NewsNotFoundException.getById(newsId);
+        } catch (FeignException e) {
+            throw FeignServerErrorException.getInstance(Constants.ERROR_FEIGN_NEWS);
+        }
+    }
+
+    /**
+     * Метод проверяет, является ли пользователь автором
+     * или администратором.
+     *
+     * @param username автор.
+     * @return true - если не автор и не администратор.
+     */
+    private boolean isNotValidUser(String username) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities()
+                .contains(new SimpleGrantedAuthority(DataSecurity.ROLE_ADMIN))) {
+            return false;
+        }
+
+        if (!authentication.getAuthorities()
+                .contains(new SimpleGrantedAuthority(DataSecurity.ROLE_SUBSCRIBER))) {
+            return true;
+        }
+
+        return !username.equals(authentication.getPrincipal());
+
+    }
 }

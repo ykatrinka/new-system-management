@@ -1,3 +1,4 @@
 ext {
     mapstructVersion = '1.5.5.Final'
+    jjwtVersion = '0.11.5'
 }

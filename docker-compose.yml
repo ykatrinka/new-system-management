@@ -14,6 +14,18 @@ services:
     networks:
       - news-system
 
+  auth-db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: "auth_db"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    container_name: auth-db
+    ports:
+      - "5433:5432"
+    networks:
+      - news-system
+
 
   server-config:
     image: hyness/spring-cloud-config-server
@@ -26,6 +38,7 @@ services:
     environment:
       SPRING_CLOUD_CONFIG_SERVER_GIT_URI: https://github.com/ykatrinka/news-cloud-config.git
       SPRING_CLOUD_CONFIG_SERVER_GIT_DEFAULT_LABEL: master
+      JWT_SECRET: mtc3334dwMITX7fn5nveWDs8MTXyfmZ53JmdcySpd2o
     networks:
       - news-system
 
@@ -51,6 +64,8 @@ services:
     ports:
       - "8081:8081"
     restart: unless-stopped
+    environment:
+      JWT_SECRET: mtc3334dwMITX7fn5nveWDs8MTXyfmZ53JmdcySpd2o
     depends_on:
       - news-db
       - cache-redis
@@ -68,9 +83,29 @@ services:
     ports:
       - "8082:8082"
     restart: unless-stopped
+    environment:
+      JWT_SECRET: mtc3334dwMITX7fn5nveWDs8MTXyfmZ53JmdcySpd2o
     depends_on:
       - news-db
       - cache-redis
+      - server-config
+    networks:
+      - news-system
+
+
+  auth-service:
+    image: auth-service-image
+    container_name: auth-service
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    ports:
+      - "8003:8003"
+    restart: unless-stopped
+    environment:
+      JWT_SECRET: mtc3334dwMITX7fn5nveWDs8MTXyfmZ53JmdcySpd2o
+    depends_on:
+      - auth-db
       - server-config
     networks:
       - news-system

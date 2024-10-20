@@ -11,6 +11,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class BaseURLData {
     public static final String BASE_URL_AUTH = "/auth";
-    public static final String URL_REGISTER = "register";
-    public static final String URL_LOGIN = "login";
+    public static final String URL_REGISTER = "/register";
+    public static final String URL_TOKEN = "/token";
 }

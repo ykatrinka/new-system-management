@@ -42,7 +42,12 @@ public class Constants {
     /**
      * URL auth.
      */
-    public static final String URL_SEC_AUTH = "/auth/**";
+    public static final String URL_SEC_AUTH = "/auth/token";
+
+    /**
+     * URL регистрация нового пользователя.
+     */
+    public static final String URL_SEC_REG = "/auth/register";
 
     /**
      * URL open API.

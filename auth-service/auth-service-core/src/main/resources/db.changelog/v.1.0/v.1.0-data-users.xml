@@ -1,0 +1,89 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="data-table-users" author="Katerina">
+
+        <insert tableName="users">
+            <column name="username" value="admin"/>
+            <column name="password" value="$2a$10$eIJJyp/bF45nmXgHTGINEePUmKtdzmTUIeucouXgm0w9cbf12pBv6"/>
+            <column name="role" value="ADMIN"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="username" value="lucy"/>
+            <column name="password" value="$2a$10$eIJJyp/bF45nmXgHTGINEePUmKtdzmTUIeucouXgm0w9cbf12pBv6"/>
+            <column name="role" value="JOURNALIST"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="username" value="crazy"/>
+            <column name="password" value="$2a$10$eIJJyp/bF45nmXgHTGINEePUmKtdzmTUIeucouXgm0w9cbf12pBv6"/>
+            <column name="role" value="JOURNALIST"/>
+        </insert>
+
+
+        <insert tableName="users">
+            <column name="username" value="lora"/>
+            <column name="password" value="$2a$10$eIJJyp/bF45nmXgHTGINEePUmKtdzmTUIeucouXgm0w9cbf12pBv6"/>
+            <column name="role" value="SUBSCRIBER"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="username" value="chelsey"/>
+            <column name="password" value="$2a$10$eIJJyp/bF45nmXgHTGINEePUmKtdzmTUIeucouXgm0w9cbf12pBv6"/>
+            <column name="role" value="SUBSCRIBER"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="username" value="coralie"/>
+            <column name="password" value="$2a$10$eIJJyp/bF45nmXgHTGINEePUmKtdzmTUIeucouXgm0w9cbf12pBv6"/>
+            <column name="role" value="SUBSCRIBER"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="username" value="mila"/>
+            <column name="password" value="$2a$10$eIJJyp/bF45nmXgHTGINEePUmKtdzmTUIeucouXgm0w9cbf12pBv6"/>
+            <column name="role" value="SUBSCRIBER"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="username" value="nick"/>
+            <column name="password" value="$2a$10$eIJJyp/bF45nmXgHTGINEePUmKtdzmTUIeucouXgm0w9cbf12pBv6"/>
+            <column name="role" value="SUBSCRIBER"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="username" value="willa"/>
+            <column name="password" value="$2a$10$eIJJyp/bF45nmXgHTGINEePUmKtdzmTUIeucouXgm0w9cbf12pBv6"/>
+            <column name="role" value="SUBSCRIBER"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="username" value="kitty"/>
+            <column name="password" value="$2a$10$eIJJyp/bF45nmXgHTGINEePUmKtdzmTUIeucouXgm0w9cbf12pBv6"/>
+            <column name="role" value="SUBSCRIBER"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="username" value="doberman"/>
+            <column name="password" value="$2a$10$eIJJyp/bF45nmXgHTGINEePUmKtdzmTUIeucouXgm0w9cbf12pBv6"/>
+            <column name="role" value="SUBSCRIBER"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="username" value="tara"/>
+            <column name="password" value="$2a$10$eIJJyp/bF45nmXgHTGINEePUmKtdzmTUIeucouXgm0w9cbf12pBv6"/>
+            <column name="role" value="SUBSCRIBER"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="username" value="fredy"/>
+            <column name="password" value="$2a$10$eIJJyp/bF45nmXgHTGINEePUmKtdzmTUIeucouXgm0w9cbf12pBv6"/>
+            <column name="role" value="SUBSCRIBER"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

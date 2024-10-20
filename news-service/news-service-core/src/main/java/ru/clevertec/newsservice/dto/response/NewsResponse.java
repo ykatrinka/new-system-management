@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 public record NewsResponse(
         Long id,
         LocalDateTime time,
+        String username,
         String title,
         String text
 ) implements Serializable {
