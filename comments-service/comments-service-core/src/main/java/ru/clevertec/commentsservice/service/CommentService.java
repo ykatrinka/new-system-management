@@ -1,7 +1,6 @@
 package ru.clevertec.commentsservice.service;
 
 
-import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.commentsservice.dto.request.CommentRequest;
 import ru.clevertec.commentsservice.dto.response.CommentResponse;
 
@@ -41,8 +40,8 @@ public interface CommentService {
     /**
      * Метод для обновления комментария в базе данных.
      *
-     * @param commentRequest Полученные данные для обновления комментария.
      * @param commentId      идентификатор обновляемого комментария.
+     * @param commentRequest Полученные данные для обновления комментария.
      * @return CommentResponse
      * Возвращает обновленная сущность.
      */
@@ -81,6 +80,5 @@ public interface CommentService {
      * @param pageNumber Номер страницы.
      * @return Список комментариев по указанной странице.
      */
-    @Transactional(readOnly = true)
     List<CommentResponse> getCommentsByNewsId(long newsId, int pageNumber);
 }

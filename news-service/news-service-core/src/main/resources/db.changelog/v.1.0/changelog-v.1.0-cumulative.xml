@@ -6,6 +6,8 @@
 
     <include file="/db.changelog/v.1.0/v.1.0-schema-news.xml" context="dev, prod, test"/>
     <include file="/db.changelog/v.1.0/v.1.0-schema-comment.xml" context="dev, prod, test"/>
+    <include file="/db.changelog/v.1.0/v.1.0-schema-news-update.xml" context="dev, prod, test"/>
+
     <include file="db.changelog/v.1.0/v.1.0-data-news.xml" context="dev, prod"/>
     <include file="db.changelog/v.1.0/v.1.0-data-comment.xml" context="dev, prod"/>
 

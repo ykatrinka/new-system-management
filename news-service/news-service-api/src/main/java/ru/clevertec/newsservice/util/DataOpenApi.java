@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DataOpenApi {
+
     public static final String TAG_NEWS = "News Controller";
     public static final String SUMMARY_ADD_NEWS = "Create news";
     public static final String SUMMARY_GET_ALL_NEWS = "Get all news";

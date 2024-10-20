@@ -8,6 +8,9 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.newsservice.dto.request.NewsRequest;
@@ -15,6 +18,7 @@ import ru.clevertec.newsservice.dto.response.CommentResponse;
 import ru.clevertec.newsservice.dto.response.NewsCommentsResponse;
 import ru.clevertec.newsservice.dto.response.NewsResponse;
 import ru.clevertec.newsservice.entity.News;
+import ru.clevertec.newsservice.exception.AnotherAuthorException;
 import ru.clevertec.newsservice.exception.CommentNotFoundException;
 import ru.clevertec.newsservice.exception.FeignServerErrorException;
 import ru.clevertec.newsservice.exception.NewsNotFoundException;
@@ -25,6 +29,7 @@ import ru.clevertec.newsservice.mapper.NewsMapper;
 import ru.clevertec.newsservice.repository.NewsRepository;
 import ru.clevertec.newsservice.service.NewsService;
 import ru.clevertec.newsservice.util.Constants;
+import ru.clevertec.newsservice.util.DataSecurity;
 import ru.clevertec.newsservice.util.ReflectionUtil;
 
 import java.util.List;
@@ -54,6 +59,9 @@ public class NewsServiceImpl implements NewsService {
     @CachePut(value = "news", key = "#result.id")
     @Override
     public NewsResponse createNews(NewsRequest newsRequest) {
+        if (isNotValidUser(newsRequest.username())) {
+            throw AnotherAuthorException.getInstance(Constants.ERROR_ANOTHER_AUTHOR);
+        }
         News news = newsMapper.requestToNews(newsRequest);
         News savedNews = newsRepository.save(news);
 
@@ -97,15 +105,19 @@ public class NewsServiceImpl implements NewsService {
     /**
      * Метод для обновления новости в базе данных.
      *
-     * @param newsRequest Полученные данные для обновления новости.
      * @param newsId      идентификатор обновляемой новости.
+     * @param newsRequest Полученные данные для обновления новости.
      * @return NewsResponse
      * Возвращает обновленную сущность.
      */
     @CachePut(value = "news", key = "#result.id")
     @Override
     public NewsResponse updateNews(Long newsId, NewsRequest newsRequest) {
-        News news = newsRepository.findById(newsId)
+        Optional<News> newsInBD = newsRepository.findById(newsId);
+        if (newsInBD.isPresent() && isNotValidUser(newsInBD.get().getUsername())) {
+            throw AnotherAuthorException.getInstance(Constants.ERROR_ANOTHER_AUTHOR);
+        }
+        News news = newsInBD
                 .map(updNews -> newsMapper.updateFromRequest(newsId, newsRequest))
                 .orElseThrow(() ->
                         NewsNotFoundException.getById(newsId)
@@ -124,8 +136,15 @@ public class NewsServiceImpl implements NewsService {
     @CacheEvict(value = "news")
     @Override
     public void deleteNews(Long newsId) {
-        commentsClient.deleteCommentsByNewsId(newsId);
-        newsRepository.findById(newsId).ifPresent(newsRepository::delete);
+        Optional<News> news = newsRepository.findById(newsId);
+        if (news.isPresent() && isNotValidUser(news.get().getUsername())) {
+            throw AnotherAuthorException.getInstance(Constants.ERROR_ANOTHER_AUTHOR);
+        }
+        List<CommentResponse> comments = commentsClient.getCommentsByNewsId(newsId, 1);
+        if (comments != null && comments.isEmpty()) {
+            commentsClient.deleteCommentsByNewsId(newsId);
+        }
+        news.ifPresent(newsRepository::delete);
     }
 
     /**
@@ -210,4 +229,25 @@ public class NewsServiceImpl implements NewsService {
         return comment;
     }
 
+    /**
+     * Метод проверяет, является ли пользователь автором
+     * или администратором.
+     *
+     * @param username автор.
+     * @return true - если не автор и не администратор.
+     */
+    private boolean isNotValidUser(String username) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities()
+                .contains(new SimpleGrantedAuthority(DataSecurity.ROLE_ADMIN))) {
+            return false;
+        }
+
+        if (!authentication.getAuthorities()
+                .contains(new SimpleGrantedAuthority(DataSecurity.ROLE_JOURNALIST))) {
+            return true;
+        }
+
+        return !username.equals(authentication.getPrincipal());
+    }
 }

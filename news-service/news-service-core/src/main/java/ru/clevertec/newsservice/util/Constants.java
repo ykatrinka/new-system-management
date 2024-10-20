@@ -71,4 +71,14 @@ public class Constants {
      * Сообщение, когда comments service возвращает 500 ошибку.
      */
     public static final String ERROR_FEIGN_COMMENTS = "Server comments error";
+
+    public static final int MIN_USERNAME_LENGTH = 3;
+    public static final int MAX_USERNAME_LENGTH = 20;
+    public static final int MIN_PASSWORD_LENGTH = 3;
+    public static final int MAX_PASSWORD_LENGTH = 100;
+
+    /**
+     * Сообщение о не корректно указанном поле для полнотекстового поиска.
+     */
+    public static final String ERROR_ANOTHER_AUTHOR = "You are not author";
 }

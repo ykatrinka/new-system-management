@@ -8,6 +8,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.clevertec.newsservice.exception.AnotherAuthorException;
 import ru.clevertec.newsservice.exception.CommentNotFoundException;
 import ru.clevertec.newsservice.exception.NewsNotFoundException;
 import ru.clevertec.newsservice.exception.NoSuchSearchFieldException;
@@ -98,6 +99,23 @@ public class ExceptionHandlingController {
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * Сообщение при попытке изменения не своего комментария.
+     *
+     * @param e Тип выброшенного исключения
+     * @return ErrorMessage
+     * Данные со статусом и описанием ошибки.
+     */
+    @ExceptionHandler(value = {AnotherAuthorException.class})
+    public ResponseEntity<ErrorMessage> handleAnotherAuthorExceptions(AnotherAuthorException e) {
+        ErrorMessage errorMessage = ErrorMessage.builder()
+                .statusCode(HttpStatus.CONFLICT.value())
+                .timeStamp(LocalDateTime.now())
+                .message(e.getMessage())
+                .build();
+
+        return new ResponseEntity<>(errorMessage, HttpStatus.CONFLICT);
+    }
 
     /**
      * Сообщение при ошибках валидации (не корректные данные).

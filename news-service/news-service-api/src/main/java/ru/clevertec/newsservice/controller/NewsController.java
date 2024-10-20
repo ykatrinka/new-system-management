@@ -111,8 +111,10 @@ public class NewsController {
      */
     @Operation(summary = DataOpenApi.SUMMARY_UPDATE_NEWS, tags = DataOpenApi.TAG_NEWS)
     @PutMapping("/{newsId}")
-    public ResponseEntity<NewsResponse> updateNews(@PathVariable(NEWS_ID_PARAM) Long newsId,
-                                                   @Valid @RequestBody NewsRequest newsRequest) {
+    public ResponseEntity<NewsResponse> updateNews(
+            @PathVariable(NEWS_ID_PARAM) Long newsId,
+            @Valid @RequestBody NewsRequest newsRequest
+    ) {
         NewsResponse news = newsService.updateNews(newsId, newsRequest);
         return new ResponseEntity<>(news, HttpStatus.OK);
     }

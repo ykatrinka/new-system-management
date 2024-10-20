@@ -7,6 +7,7 @@
 
     <changeSet id="insert-rows-news" author="Katerina">
         <insert tableName="news">
+            <column name="username" value="crazy"/>
             <column name="title" value='В Лошицком парке восстановят исторические здания и высадят яблоневый сад'/>
             <column name="time" value="2024-10-08T19:03:28.832"/>
             <column name="text"
@@ -14,6 +15,7 @@
         </insert>
 
         <insert tableName="news">
+            <column name="username" value="lucy"/>
             <column name="title" value='ИИ помог открыть 162 тысячи новых видов вирусов'/>
             <column name="time" value="2024-09-07T19:03:28.832"/>
             <column name="text"
@@ -21,6 +23,7 @@
         </insert>
 
         <insert tableName="news">
+            <column name="username" value="lucy"/>
             <column name="title" value='Стоимость X (бывший Twitter) упала после покупки Маском почти на 80%'/>
             <column name="time" value="2024-10-01T19:03:28.832"/>
             <column name="text"
@@ -28,6 +31,7 @@
         </insert>
 
         <insert tableName="news">
+            <column name="username" value="crazy"/>
             <column name="title" value='Квадробика в Беларуси'/>
             <column name="time" value="2024-07-07T19:03:28.832"/>
             <column name="text"
@@ -35,6 +39,7 @@
         </insert>
 
         <insert tableName="news">
+            <column name="username" value="lucy"/>
             <column name="title" value='Нобелевскую премию мира 2024'/>
             <column name="time" value="2024-10-11T19:03:28.832"/>
             <column name="text"
@@ -42,6 +47,7 @@
         </insert>
 
         <insert tableName="news">
+            <column name="username" value="lucy"/>
             <column name="title" value='Активы BlackRock'/>
             <column name="time" value="2024-10-12T19:03:28.832"/>
             <column name="text"
@@ -49,6 +55,7 @@
         </insert>
 
         <insert tableName="news">
+            <column name="username" value="lucy"/>
             <column name="title" value='Наводнение в пустыне Сахара'/>
             <column name="time" value="2024-10-10T19:03:28.832"/>
             <column name="text"
@@ -56,6 +63,7 @@
         </insert>
 
         <insert tableName="news">
+            <column name="username" value="crazy"/>
             <column name="title" value='Генетика влияет на любовь к кофе? Ученые выяснили'/>
             <column name="time" value="2024-09-07T19:03:28.832"/>
             <column name="text"
@@ -63,6 +71,7 @@
         </insert>
 
         <insert tableName="news">
+            <column name="username" value="crazy"/>
             <column name="title" value='Надаль объявил о завершении карьеры'/>
             <column name="time" value="2024-10-12T19:03:28.832"/>
             <column name="text"
@@ -70,6 +79,7 @@
         </insert>
 
         <insert tableName="news">
+            <column name="username" value="crazy"/>
             <column name="title" value='Стартовала большая распродажа работ Марка Шагала'/>
             <column name="time" value="2024-10-10T19:03:28.832"/>
             <column name="text"
@@ -77,6 +87,7 @@
         </insert>
 
         <insert tableName="news">
+            <column name="username" value="lucy"/>
             <column name="title" value='Драконида – метеоры в небе над Беларусь'/>
             <column name="time" value="2024-10-10T19:03:28.832"/>
             <column name="text"
@@ -84,6 +95,7 @@
         </insert>
 
         <insert tableName="news">
+            <column name="username" value="crazy"/>
             <column name="title" value='Солнечное затмение 2 октября'/>
             <column name="time" value="2024-10-10T19:03:28.832"/>
             <column name="text"
@@ -91,6 +103,7 @@
         </insert>
 
         <insert tableName="news">
+            <column name="username" value="crazy"/>
             <column name="title" value='Ураган «Милтон» — ожидания и последствия'/>
             <column name="time" value="2024-10-10T19:03:28.832"/>
             <column name="text"
@@ -98,6 +111,7 @@
         </insert>
 
         <insert tableName="news">
+            <column name="username" value="lucy"/>
             <column name="title" value='В Африке новая вспышка оспы обезьян'/>
             <column name="time" value="2024-10-10T19:03:28.832"/>
             <column name="text"
@@ -105,6 +119,7 @@
         </insert>
 
         <insert tableName="news">
+            <column name="username" value="lucy"/>
             <column name="title" value='Дождь в Непале'/>
             <column name="time" value="2024-10-10T19:03:28.832"/>
             <column name="text"
@@ -112,6 +127,7 @@
         </insert>
 
         <insert tableName="news">
+            <column name="username" value="crazy"/>
             <column name="title" value='Трамп пообещал снизить цены на топливо в 2 раза'/>
             <column name="time" value="2024-10-10T19:03:28.832"/>
             <column name="text"
@@ -119,6 +135,7 @@
         </insert>
 
         <insert tableName="news">
+            <column name="username" value="lucy"/>
             <column name="title" value='Шнобелевская премия-2024'/>
             <column name="time" value="2024-10-10T19:03:28.832"/>
             <column name="text"
@@ -126,6 +143,7 @@
         </insert>
 
         <insert tableName="news">
+            <column name="username" value="crazy"/>
             <column name="title" value='Первые космические туристы вышли в открытый космос'/>
             <column name="time" value="2024-10-10T19:03:28.832"/>
             <column name="text"
@@ -133,6 +151,7 @@
         </insert>
 
         <insert tableName="news">
+            <column name="username" value="lucy"/>
             <column name="title" value='Письмо Эйнштейна Рузвельту продано за почти 4 миллиона долларов: что в нем?'/>
             <column name="time" value="2024-10-10T19:03:28.832"/>
             <column name="text"
@@ -140,6 +159,7 @@
         </insert>
 
         <insert tableName="news">
+            <column name="username" value="crazy"/>
             <column name="title" value='Мемы — угроза для мировой экологии'/>
             <column name="time" value="2024-10-10T19:03:28.832"/>
             <column name="text" value='Эти неиспользуемые сохраняемые данные называются «темными данными», и с каждым годом эта проблема становится все более и более актуальной. Как сообщает издание The Guardian, эти медиафайлы занимают все больше места на серверах, а это значит, что для их хранения расходуется электроэнергия. Согласно оценкам британской энергетической компании National Grid, к 2030-му году 6% всей электроэнергии в Великобритании будет расходиться на поддержание дата-центров с интернет-информацией, и этот процент будет расти ежегодно.'/>

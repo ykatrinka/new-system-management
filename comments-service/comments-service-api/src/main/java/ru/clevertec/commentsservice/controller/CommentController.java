@@ -61,7 +61,8 @@ public class CommentController {
      */
     @Operation(summary = DataOpenApi.SUMMARY_ADD_COMMENT, tags = DataOpenApi.TAG_COMMENTS)
     @PostMapping
-    public ResponseEntity<CommentResponse> createComment(@Valid @RequestBody CommentRequest commentRequest) {
+    public ResponseEntity<CommentResponse> createComment(
+            @Valid @RequestBody CommentRequest commentRequest) {
         CommentResponse comment = commentService.createComment(commentRequest);
         return new ResponseEntity<>(comment, HttpStatus.CREATED);
     }
@@ -110,8 +111,9 @@ public class CommentController {
      */
     @Operation(summary = DataOpenApi.SUMMARY_UPDATE_COMMENT, tags = DataOpenApi.TAG_COMMENTS)
     @PutMapping(URL_COMMENT_ID)
-    public ResponseEntity<CommentResponse> updateComment(@PathVariable(COMMENT_ID) Long commentId,
-                                                         @Valid @RequestBody CommentRequest commentRequest) {
+    public ResponseEntity<CommentResponse> updateComment(
+            @PathVariable(COMMENT_ID) Long commentId,
+            @Valid @RequestBody CommentRequest commentRequest) {
         CommentResponse comment = commentService.updateComment(commentId, commentRequest);
         return new ResponseEntity<>(comment, HttpStatus.OK);
     }
@@ -186,5 +188,4 @@ public class CommentController {
         List<CommentResponse> comments = commentService.getCommentsByNewsId(newsId, pageNumber - 1);
         return new ResponseEntity<>(comments, comments.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK);
     }
-
 }
